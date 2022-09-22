@@ -3,7 +3,8 @@
 #include "/public/colors.h"
 using namespace std;
 
-//30 x 20 map. FIXME: Fill in later.
+//Global vector. Any function can access it.
+//Current: 30 x 20 map. TODO: Change/fill in later; make lore friendly.
 vector<string> worldMap = {
 	"******************************",
 	"*                    t       *",
@@ -30,80 +31,83 @@ vector<string> worldMap = {
 };
 
 
-void Draw_Map(int rowSize, int colSize) {
+//Draws the map initially and after player moves.
+void Draw_Map(int rowSize, int colSize, int playerPositionCol, int playerPositionRow) {
 	clearscreen();
+
+	//Keeps map in top left. Change 0 0 to whatever to have map in another spot.
 	movecursor(0, 0);
+
+	//Prints map out. Repeats printing one row and all columns.
 	for (size_t row = 0; row <= rowSize; row++) {
 		for (size_t col = 0; col <= colSize; col++) {
-			if (row == //FIXME and col == //FIXME) cout << "P";
+			if (col == playerPositionCol and row == playerPositionRow) cout << "P"; //TODO: Change player icon.
 			else cout << worldMap.at(row).at(col);
 		}
 		cout << endl;
 	}
 }
 
-void Get_Player_Location() {
-	//TODO:
-}
-
-
-int main() {
+//Updates the values to pass to Draw_Map when player moves.
+void Update_Map() {
+	//Define how many rows/cols there are.
 	const int rowSize = worldMap.size() - 1, colSize = worldMap.at(rowSize).size() - 1;
+	//Spawn player in the middle of the world. TODO: Change to a lore-friendly starting point.
+	int currentPlayerCol = colSize / 2, currentPlayerRow = rowSize / 2;
+	int previousPlayerCol = currentPlayerCol, previousPlayerRow = currentPlayerRow;
 
-	Draw_Map(rowSize, colSize);
+	//Draw map initially.
+	Draw_Map(rowSize, colSize, currentPlayerCol, currentPlayerRow);
 
-
-
-	//I'm thinking we should try to have main be a driver program, with
-	//functions that carry out the majority of the program.
-	//This will make it far easier to test our own codes independantly.
-	//Not everything will need a function (such as dialogue), but at least for
-	//the map, dungeon/puzzles, etc. it'll be a good idea.
-
-}
-
-
-/*
-void Interactable_Map() {
-	//Defines the playable area (as big as screen size) and prints map out.
-	vector<vector<int>> [ROWS, COLS] = get_terminal_size();
-// 	const auto [ROWS, COLS] = get_terminal_size();
-	cout << ROWS << " " << COLS << endl;
-
-	//Sets x and y to middle of the screen.
-	int x = COLS / 2;
-	int y = ROWS / 2;
-
-	//Nonblocking I/O
+	//Continuously checks for user input.
 	set_raw_mode(true);
-
-	//In order to navigate the map, infinite loop must be used until quit signal (Q or q) is sent.
 	while (true) {
-		set_cursor_mode(false);
-		//Stores the key pressed on the keyboard.
 		int keyPress = quick_read();
 
-		//If quit signal is sent, quit.
-		if (keyPress == 'Q' or keyPress == 'q') break;
-		//Else move the *Something here* where on the screen they want.
-		if (keyPress == UP_ARROW) y--;
-		if (keyPress == DOWN_ARROW) y++;
-		if (keyPress == LEFT_ARROW) x--;
-		if (keyPress == RIGHT_ARROW) x++;
+		//If user wants to quit, breaks out and returns.
+		if (keyPress == 'q' or keyPress == 'Q') break;
+		else { //Else if user wants to move, change their current coordinates.
+			if (keyPress == UP_ARROW) currentPlayerRow--;
+			if (keyPress == DOWN_ARROW)	currentPlayerRow++;
+			if (keyPress == LEFT_ARROW) currentPlayerCol--;
+			if (keyPress == RIGHT_ARROW) currentPlayerCol++;
 
-		//Prevents user from moving offscreen.
-		y = clamp(y, 0, ROWS);
-		x = clamp(x, 0, COLS);
-		clearscreen();
-		movecursor(y, x);
-		cout << CYAN << "test" << endl;
+			//Prevents player from going outside the map.
+			currentPlayerCol = clamp(currentPlayerCol, 1, colSize - 1);
+			currentPlayerRow = clamp(currentPlayerRow, 1, rowSize - 1);
 
-		//Prevents lagging the server by only taking input every 10,000 microseconds (or every 0.01 seconds).
-		usleep(10000);
+			//If player position has moved, redraw map and update player position.
+			if (previousPlayerCol != currentPlayerCol or previousPlayerRow != currentPlayerRow) {
+				previousPlayerRow = currentPlayerRow;
+				previousPlayerCol = currentPlayerCol;
+				Draw_Map(rowSize, colSize, currentPlayerCol, currentPlayerRow);
+			}
+		}
+	}
+}
+
+
+//Main acts as a driver program.
+int main() {
+
+	//TODO: If statement for if user picks/presses something then prompt the user if they want to go to the map.
+	string userChoice;
+
+	cout << "Do you want to go to the world map (y/n): ";
+	cin >> userChoice;
+
+	if (userChoice == "Yes" or userChoice == "yes" or userChoice == "y" or userChoice == "Y") {
+		set_cursor_mode(false);
+		Update_Map();
 	}
 
-	set_raw_mode(false); //Sets raw mode to false so constant input isn't recorded.
-	resetcolor(); //Clears colors of map.
-	set_cursor_mode(true); //Brings cursor back.
-	clearscreen(); //Reset screen size so map goes away.
-}*/
+	//TODO: If statement for if user wants to go to inventory.
+
+	//TODO: If statement for if the user wants to enter a place?
+
+	//Clean up after yourself.
+	set_cursor_mode(true);
+	set_raw_mode(false);
+	resetcolor();
+	clearscreen();
+}

@@ -4,30 +4,41 @@
 using namespace std;
 
 //Global vector. Any function can access it.
-//Current: 30 x 20 map. TODO: Change/fill in later; make lore friendly.
+//Current: 100 x 30 map. TODO: Change/fill in later; make lore friendly.
 vector<string> worldMap = {
-	"******************************",
-	"*                    t       *",
-	"*  t                t  tt    *",
-	"*               t t          *",
-	"*                            *",
-	"*                            *",
-	"*                 t          *",
-	"*       t                    *",
-	"*         t       t          *",
-	"*          t      t          *",
-	"*            t t t           *",
-	"*               t            *",
-	"*             t              *",
-	"*          t t               *",
-	"*        t         tt        *",
-	"*     t t           t        *",
-	"*   t                t       *",
-	"*  t                 t       *",
-	"*                     t      *",
-	"*                            *",
-	"*                            *",
-	"******************************",
+	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"*                                                                                                 *",
+	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
 };
 
 
@@ -69,8 +80,8 @@ void Update_Map() {
 		else { //Else if user wants to move, change their current coordinates.
 			if (keyPress == UP_ARROW) currentPlayerRow--;
 			if (keyPress == DOWN_ARROW)	currentPlayerRow++;
-			if (keyPress == LEFT_ARROW) currentPlayerCol--;
-			if (keyPress == RIGHT_ARROW) currentPlayerCol++;
+			if (keyPress == LEFT_ARROW) currentPlayerCol -= 2;
+			if (keyPress == RIGHT_ARROW) currentPlayerCol += 2;
 
 			//Prevents player from going outside the map.
 			currentPlayerCol = clamp(currentPlayerCol, 1, colSize - 1);
@@ -86,6 +97,26 @@ void Update_Map() {
 	}
 }
 
+
+void Puzzle_1() {
+
+}
+
+void Puzzle_2() {
+
+}
+
+void Puzzle_3() {
+
+}
+
+void Puzzle_4() {
+
+}
+
+void Puzzle_5() {
+
+}
 
 //Main acts as a driver program.
 int main() {

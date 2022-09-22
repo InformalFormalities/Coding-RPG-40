@@ -1,3 +1,9 @@
+//Fill out this comment with your names and which bullet points you did
+//Partners:
+//Bullet Points:
+//Extra Credit:
+//URL to Cover art and music;
+
 #include <iostream>
 #include <unistd.h>
 #include "/public/colors.h"
@@ -51,6 +57,41 @@ vector<string> worldMap = { //For every extra special character (i.e. \, ", ') t
 	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
 };
 
+void menu() {
+	
+	const auto [ROWS, COLS] = get_terminal_size(); 
+	int x = COLS / 2;
+	int y = ROWS / 2;
+	
+	clearscreen();
+	
+	movecursor(y, x-9);
+	cout << "Welcome to the GAME!!!👀" << endl;
+	
+	movecursor(y+3, x-11);
+	cout << "Press 'p' to start the game😉" << endl;
+	
+	movecursor(y+6, x-10);
+	cout << "Press 'q' to quit the game" << endl;
+	
+	
+	set_cursor_mode(false);
+	set_raw_mode(true);
+	while (true) {
+		int keyPress = quick_read();
+		
+		if (keyPress == 'p' or keyPress == 'P') {
+			return;
+		}
+		else if (keyPress == 'q' or keyPress == 'Q') {
+			set_cursor_mode(true);
+			set_raw_mode(false);
+			clearscreen();
+			movecursor(0,0);
+			exit(0);
+		}
+	}
+}
 
 //Draws the map initially and after player moves.
 void Draw_Map(int rowSize, int colSize, int playerPositionCol, int playerPositionRow) {
@@ -128,15 +169,24 @@ void Puzzle_5() {
 
 }
 
+void die() {
+	cout << "BAD INPUT!!" << endl;
+	exit(1);
+}
+
 //Main acts as a driver program.
 int main() {
+	
+	// Calling Menu Function
+	menu();
 
 	//TODO: If statement for if user picks/presses something then prompt the user if they want to go to the map.
 	string userChoice;
 
 	cout << "Do you want to go to the world map (y/n): ";
 	cin >> userChoice;
-
+	if (!cin) die();
+	
 	if (userChoice == "y" or userChoice == "Y" or userChoice == "yes" or userChoice == "Yes") {
 		set_cursor_mode(false);
 		Update_Map();

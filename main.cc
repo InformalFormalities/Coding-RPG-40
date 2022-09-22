@@ -4,41 +4,51 @@
 using namespace std;
 
 //Global vector. Any function can access it.
-//Current: 100 x 30 map. TODO: Change/fill in later; make lore friendly.
-vector<string> worldMap = {
-	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"*                                                                                                 *",
-	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
+//Current: 200 x 30 map. TODO: Change/fill in later; make lore friendly.
+vector<string> worldMap = { //For every extra special character (i.e. \, ", ') to make it appear on screen, you must add that many spaces.
+	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
+	"*                                                                                                                                                                                                           *",
+	"*             /\\         /\\                                                                                                                                                                                 *",
+	"*            /  \\       /  \\                                                                                                                                                                                *",
+	"*            |/\\|       |/\\|                                                                                                                                                                                *",
+	"*            |--|       |--|                                                                                                                                                                                *",
+	"*       /----|  |-------|  |----\\                                                                                                                                                                           *",
+	"*       |                       |                                                                                                                                                                           *",
+	"*       |                       |                                                                                                                                                                           *",
+	"*       |          __           |                                                                                                                                                                           *",
+	"*       |         /  \\          |                                                                                                                                                                           *",
+	"*       |         |  |          |                                                                                                                                                                           *",
+	"*       -------------------------                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                                           *",
+	"*                                                                                                                                                                                           ""Help me!""        *",
+	"*                                                                                                                                                                                              __           *",
+	"*                                                                                                                                                                                             /  \\          *",
+	"*                                                                                                                                                                                            /    \\         *",
+	"*                                                                                                                                                                                           /  /\\  \\        *",
+	"*                                                                                                                                                                                          /  /  \\  \\       *",
+	"*                                                                                                                                                                                         /  |    |  \\      *",
+	"*                                                                                                                                                                                         |  |____|  |      *",
+	"*                                                                                                                                                                                         |          |      *",
+	"*                                                                                                                                                                                         |          |      *",
+	"*                                                                                                                                                                                         |          |      *",
+	"*                                                                                                                                                                                         |          |      *",
+	"*                                                                                                                                                                                         |          |      *",
+	"*                                                                                                                                                                                         |          |      *",
+	"*                                                                                                                                                                                         |          |      *",
+	"*                                                                                                                                                                                         |          |      *",
+	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
 };
 
 
@@ -63,8 +73,8 @@ void Draw_Map(int rowSize, int colSize, int playerPositionCol, int playerPositio
 void Update_Map() {
 	//Define how many rows/cols there are.
 	const int rowSize = worldMap.size() - 1, colSize = worldMap.at(rowSize).size() - 1;
-	//Spawn player in the middle of the world. TODO: Change to a lore-friendly starting point.
-	int currentPlayerCol = colSize / 2, currentPlayerRow = rowSize / 2;
+	//Spawns player at the catsle doors (19 x, 13 y).
+	int currentPlayerCol = 19, currentPlayerRow = 13;
 	int previousPlayerCol = currentPlayerCol, previousPlayerRow = currentPlayerRow;
 
 	//Draw map initially.
@@ -77,7 +87,7 @@ void Update_Map() {
 
 		//If user wants to quit, breaks out and returns.
 		if (keyPress == 'q' or keyPress == 'Q') break;
-		else { //Else if user wants to move, change their current coordinates.
+		else { //Else if user wants to move, change their current coordinates. For columns we change user position by 2 to make distances between x and y feel similar.
 			if (keyPress == UP_ARROW) currentPlayerRow--;
 			if (keyPress == DOWN_ARROW)	currentPlayerRow++;
 			if (keyPress == LEFT_ARROW) currentPlayerCol -= 2;
@@ -127,7 +137,7 @@ int main() {
 	cout << "Do you want to go to the world map (y/n): ";
 	cin >> userChoice;
 
-	if (userChoice == "Yes" or userChoice == "yes" or userChoice == "y" or userChoice == "Y") {
+	if (userChoice == "y" or userChoice == "Y" or userChoice == "yes" or userChoice == "Yes") {
 		set_cursor_mode(false);
 		Update_Map();
 	}
@@ -141,4 +151,5 @@ int main() {
 	set_raw_mode(false);
 	resetcolor();
 	clearscreen();
+	movecursor(0, 0);
 }

@@ -1,7 +1,7 @@
 //Partners: Declan Doss, Vahan [last name], Khushkaranpreet Grewal, Andrew [last name]
 //Bullet Points: Declan (), Vahan (), Khush (), Andrew ()
 //Extra Credit: Khush (Cover art/music), [Name] (Inventory system)
-//URL to Cover art and music:  
+//URL to Cover art and music:
 
 #include <iostream>
 #include <unistd.h>
@@ -9,7 +9,7 @@
 using namespace std;
 
 //Global vector. Any function can access it.
-//Current: 200 x 30 map. TODO: Change/fill in later; make lore friendly.
+//Current: 200 x 40 map. TODO: Change/fill in later; make lore friendly.
 vector<string> worldMap = { //For every extra special character (i.e. \, ", ') to make it appear on screen, you must add that many spaces.
 	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
 	"*                                                                                 _/              /                                                                                                         *",
@@ -20,59 +20,59 @@ vector<string> worldMap = { //For every extra special character (i.e. \, ", ') t
 	"*       /----|  |-------|  |----\\                                      _/                   |                                                                                                               *",
 	"*       |                       |                                      /                    /                                                                                                               *",
 	"*       |                       |                                    _/                    /                                                                                                                *",
-	"*       |          __           |                                  _/                     |                                                                                                                 *",
-	"*       |         /  \\          |                                /                     _/                                                                                                                   *",
-	"*       |         |  |          |                                |                     |                   i                                                                                                *",
+	"*       |          __           |                                  _/                     |                                                                                                                  *",
+	"*       |         /  \\          |                                /                     _/                                                                                                                    *",
+	"*       |         |  |          |                                |                     |                                                                                                                     *",
 	"*       -------------------------                             = = = = = = = = = = = = = = =                                                                                                                 *",
-	"*                ^    ^                                      |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|                                                                                                                *",
-	"*                ^    ^                                     /                               \\                                                                                                              *",
-	"*                ^     ^                                   /                                 \\                                                                                                             *",
+	"*                ^    ^                                      |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|                                                                                                                 *",
+	"*                ^    ^                                     /                               \\                                                                                                                *",
+	"*                ^     ^                                   /                                 \\                                                                                                              *",
 	"*                 ^      ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^    = = = = = = = = = = = = = = =    ^ ^ ^ ^ ^ ^ ^                                                                                                *",
 	"*                  ^                                         |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|                 ^                                                                                              *",
-	"*                   ^                                       /   |                     |     \\                 ^                                                                                            *",
-	"*                     ^                                    /    |         R            |     \\                                                                                                             *",
-	"*                       ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^     |         I             |                                                                                                                   *",
-	"*                                                               |         V              |                                                                                                                  *",
-	"*                                                                |        E               |                                                                                                                 *",
-	"*                                                                 |       R                |                                                                                                                *",
-	"*                                                                 |                        |                                                                                                                *",
-	"*                                                                  |                       |                                                                                                                *",
-	"*                                                                   |                       |                                                                                               ""Help me!""        *",
-	"*                                                                    |                       |                                                                                                 __           *",
-	"*                                                                     |                       |                                                                                               /  \\          *",
-	"*                                                                    |                         |                                                                                             /    \\         *",
-	"*                                                                   |                          |                                                                                            /  /\\  \\        *",
-	"*                                                                   |                          |                                                                                           /  /  \\  \\       *",
-	"*                                                                   |                          |                                                                                          /  |    |  \\      *",
-	"*                                                                   |                          |                                                                                          |  |____|  |      *",
-	"*                                                                  |                          |                                                                                           |          |      *",
-	"*                                                                 |                          |                                                                                            |          |      *",
-	"*                                                                |                          |                                                                                             |          |      *",
-	"*                                                               |                          |                                                                                              |          |      *",
-	"*                                                               |                          |                                                                                              |          |      *",
-	"*                                                               |                          |                                                                                              |          |      *",
-	"*                                                              |                          |                                                                                               |          |      *",
-	"*                                                             |                          |                                                                                                |          |      *",
+	"*                   ^                                       /   |                     |     \\                 ^                                                                                              *",
+	"*                     ^                                    /    |         R            |     \\                  ^                                                                                           *",
+	"*                       ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^     |         I             |       ^ ^ ^ ^ ^          ^                                                                                        *",
+	"*                                                               |         V              |                ^          ^                                                                                      *",
+	"*                                                                |        E               |                ^           ^ ^ ^ ^ ^                                                                            *",
+	"*                                                                 |       R                |                 ^                   ^                                                                          *",
+	"*                                                                 |                        |                   ^                   ^                                                                        *",
+	"*                                                                  |                       |                     ^                   ^                                                                      *",
+	"*                                                                   |                       |                      ^ ^ ^ ^             ^ ^                                                  ""Help me!""        *",
+	"*                                                                    |                       |                             ^               ^                                                   __           *",
+	"*                                                                     |                       |                              ^               ^                                                /  \\          *",
+	"*                                                                    |                         |                               ^               ^ ^ ^ ^ ^                                     /    \\         *",
+	"*                                                                   |                          |                                 ^ ^ ^                   ^                                  /  /\\  \\        *",
+	"*                                                                   |                          |                                      ^                    ^                               /  /  \\  \\       *",
+	"*                                                                   |                          |                                        ^                    ^                            /  |    |  \\      *",
+	"*                                                                   |                          |                                          ^ ^ ^ ^ ^ ^         ^                           |  |____|  |      *",
+	"*                                                                  |                          |                                                       ^        ^                          |          |      *",
+	"*                                                                 |                          |                                                         ^       ^                          |          |      *",
+	"*                                                                |                          |                                                           ^        ^                        |          |      *",
+	"*                                                               |                          |                                                              ^        ^ ^ ^ ^                |          |      *",
+	"*                                                               |                          |                                                               ^               ^ ^ ^ ^ ^ ^ ^ ^|          |      *",
+	"*                                                               |                          |                                                                 ^                            |          |      *",
+	"*                                                              |                          |                                                                    ^                          |          |      *",
+	"*                                                             |                          |                                                                       ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^|          |      *",
 	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
 };
 
 //Prints initial menu screen.
 void Main_Menu() {
-	
-	const auto [ROWS, COLS] = get_terminal_size(); 
+
+	const auto [ROWS, COLS] = get_terminal_size();
 	int x = COLS / 2;
 	int y = ROWS / 2;
-	
+
 	clearscreen();
-	
+
 	movecursor(y, x - 9);
 	//TODO: Change title and emoji.
 	cout << "Welcome to the GAME!!!👀" << endl;
-	
+
 	movecursor(y + 3, x - 11);
 	//TODO: Remove emoji if possible.
 	cout << "Press 'p' to start the game😉" << endl;
-	
+
 	movecursor(y + 6, x - 10);
 	cout << "Press 'q' to quit the game" << endl;
 
@@ -80,15 +80,14 @@ void Main_Menu() {
 	set_raw_mode(true);
 	while (true) {
 		int keyPress = quick_read();
-		
+
 		if (keyPress == 'p' or keyPress == 'P') {
 			return;
-		}
-		else if (keyPress == 'q' or keyPress == 'Q') {
+		} else if (keyPress == 'q' or keyPress == 'Q') {
 			set_cursor_mode(true);
 			set_raw_mode(false);
 			clearscreen();
-			movecursor(0,0);
+			movecursor(0, 0);
 			exit(0);
 		}
 	}
@@ -176,7 +175,7 @@ void die() {
 
 //Main acts as a driver program.
 int main() {
-	
+
 	// Calls Main_Menu function to print out the main menu so it's the first screen user sees.
 	Main_Menu();
 
@@ -185,7 +184,7 @@ int main() {
 	cin >> userChoice;
 	//TODO: Add more parameters to the if (!cin) die();
 	if (!cin) die();
-	
+
 	if (userChoice == "y" or userChoice == "Y" or userChoice == "yes" or userChoice == "Yes") {
 		set_cursor_mode(false);
 		Update_Map();

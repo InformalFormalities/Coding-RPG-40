@@ -1,8 +1,7 @@
-//Fill out this comment with your names and which bullet points you did
-//Partners:
-//Bullet Points:
-//Extra Credit:
-//URL to Cover art and music;
+//Partners: Declan Doss, Vahan [last name], Khushkaranpreet Grewal, Andrew [last name]
+//Bullet Points: Declan (), Vahan (), Khush (), Andrew ()
+//Extra Credit: Khush (Cover art, music), [Name] (Inventory system)
+//URL to Cover art and music: 
 
 #include <iostream>
 #include <unistd.h>
@@ -57,7 +56,7 @@ vector<string> worldMap = { //For every extra special character (i.e. \, ", ') t
 	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
 };
 
-void menu() {
+void Main_Menu() {
 	
 	const auto [ROWS, COLS] = get_terminal_size(); 
 	int x = COLS / 2;
@@ -177,14 +176,14 @@ void die() {
 //Main acts as a driver program.
 int main() {
 	
-	// Calling Menu Function
-	menu();
+	// Calls Main_Menu function to print out the main menu so it's the first screen user sees.
+	Main_Menu();
 
-	//TODO: If statement for if user picks/presses something then prompt the user if they want to go to the map.
 	string userChoice;
 
 	cout << "Do you want to go to the world map (y/n): ";
 	cin >> userChoice;
+	//TODO: Add more parameters to the if (!cin) die();
 	if (!cin) die();
 	
 	if (userChoice == "y" or userChoice == "Y" or userChoice == "yes" or userChoice == "Yes") {

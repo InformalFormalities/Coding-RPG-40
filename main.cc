@@ -12,24 +12,24 @@ using namespace std;
 //Current: 200 x 40 map. TODO: Change/fill in later; make lore friendly.
 vector<string> worldMap = { //For every extra special character (i.e. \, ", ') to make it appear on screen, you must add that many spaces.
 	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
-	"*                                                                                 _/              /                                                                                                         *",
-	"*             /\\         /\\                                                    /               |                                                                                                            *",
-	"*            /  \\       /  \\                                                 _/               /                                                                                                             *",
-	"*            |/\\|       |/\\|                                                /                /                                                                                                              *",
-	"*            |--|       |--|                                              ___/                /                                                                                                             *",
-	"*       /----|  |-------|  |----\\                                      _/                   |                                                                                                               *",
+	"*                                                                                  _/              /                                                                                                        *",
+	"*             /\\         /\\                                                       /               |                                                                                                         *",
+	"*            /  \\       /  \\                                                    _/               /                                                                                                          *",
+	"*            |/\\|       |/\\|                                                   /                /                                                                                                           *",
+	"*            |--|       |--|                                               ___/               /                                                                                                             *",
+	"*       /----|  |-------|  |----\\                                       __/                  |                                                                                                              *",
 	"*       |                       |                                      /                    /                                                                                                               *",
 	"*       |                       |                                    _/                    /                                                                                                                *",
-	"*       |          __           |                                  _/                     |                                                                                                                  *",
-	"*       |         /  \\          |                                /                     _/                                                                                                                    *",
-	"*       |         |  |          |                                |                     |                                                                                                                     *",
+	"*       |          __           |                                  _/                     |                                                                                                                 *",
+	"*       |         /  \\          |                                /                      _/                                                                                                                  *",
+	"*       |         |  |          |                                |                     |                                                                                                                    *",
 	"*       -------------------------                             = = = = = = = = = = = = = = =                                                                                                                 *",
-	"*                ^    ^                                      |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|                                                                                                                 *",
-	"*                ^    ^                                     /                               \\                                                                                                                *",
+	"*                ^    ^                                      |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|                                                                                                                *",
+	"*                ^    ^                                     /                               \\                                                                                                               *",
 	"*                ^     ^                                   /                                 \\                                                                                                              *",
 	"*                 ^      ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^    = = = = = = = = = = = = = = =    ^ ^ ^ ^ ^ ^ ^                                                                                                *",
 	"*                  ^                                         |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|                 ^                                                                                              *",
-	"*                   ^                                       /   |                     |     \\                 ^                                                                                              *",
+	"*                   ^                                       /   |                     |     \\                 ^                                                                                             *",
 	"*                     ^                                    /    |         R            |     \\                  ^                                                                                           *",
 	"*                       ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^     |         I             |       ^ ^ ^ ^ ^          ^                                                                                        *",
 	"*                                                               |         V              |                ^          ^                                                                                      *",
@@ -149,7 +149,23 @@ void Update_Map() {
 }
 
 void Puzzle_1() {
+	int puzzleAnswer = 18, userInput = 0;
 
+	cout << "In an ancient wall drawing, you find images depicting a item appearing from the wall. This item seems to only be able to be accessed after solving a math problem. As you look around, hidden in a dark corner, a problem bleeds out, ""Solve the problem to pass the test: (5 * 2) (8 / 4) + 3 + 7 - 12"". What do you believe the answer to be?" << endl;
+	cin >> userInput;
+
+	while (true) {
+		if (userInput == puzzleAnswer) {
+			break;
+		} else {
+			cout << "You enter your answer and...nothing happens. It seems you were wrong. Thinking again, what do you think the answer is?" << endl;
+			cin >> userInput;
+		}
+	}
+
+	cout << "As you hear rock scraping against rock, it turns out your answer proved fruitful! Walking over and peering into the box turns up an old key. I wonder what that's used for..." << endl;
+
+	return;
 }
 
 void Puzzle_2() {

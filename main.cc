@@ -64,13 +64,13 @@ void Main_Menu() {
 	
 	clearscreen();
 	
-	movecursor(y, x-9);
+	movecursor(y, x - 9);
 	cout << "Welcome to the GAME!!!👀" << endl;
 	
-	movecursor(y+3, x-11);
+	movecursor(y + 3, x - 11);
 	cout << "Press 'p' to start the game😉" << endl;
 	
-	movecursor(y+6, x-10);
+	movecursor(y + 6, x - 10);
 	cout << "Press 'q' to quit the game" << endl;
 	
 	
@@ -147,7 +147,6 @@ void Update_Map() {
 	}
 }
 
-
 void Puzzle_1() {
 
 }
@@ -180,7 +179,6 @@ int main() {
 	Main_Menu();
 
 	string userChoice;
-
 	cout << "Do you want to go to the world map (y/n): ";
 	cin >> userChoice;
 	//TODO: Add more parameters to the if (!cin) die();

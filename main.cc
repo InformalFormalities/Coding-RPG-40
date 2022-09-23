@@ -1,6 +1,6 @@
 //Partners: Declan Doss, Vahan [last name], Khushkaranpreet Grewal, Andrew [last name]
 //Bullet Points: Declan (), Vahan (), Khush (), Andrew ()
-//Extra Credit: Khush (Cover art, music), [Name] (Inventory system)
+//Extra Credit: Khush (Cover art/music), [Name] (Inventory system)
 //URL to Cover art and music: 
 
 #include <iostream>
@@ -56,6 +56,7 @@ vector<string> worldMap = { //For every extra special character (i.e. \, ", ') t
 	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
 };
 
+//Prints initial menu screen.
 void Main_Menu() {
 	
 	const auto [ROWS, COLS] = get_terminal_size(); 
@@ -65,15 +66,16 @@ void Main_Menu() {
 	clearscreen();
 	
 	movecursor(y, x - 9);
+	//TODO: Change title and emoji.
 	cout << "Welcome to the GAME!!!👀" << endl;
 	
 	movecursor(y + 3, x - 11);
+	//TODO: Remove emoji if possible.
 	cout << "Press 'p' to start the game😉" << endl;
 	
 	movecursor(y + 6, x - 10);
 	cout << "Press 'q' to quit the game" << endl;
-	
-	
+
 	set_cursor_mode(false);
 	set_raw_mode(true);
 	while (true) {
@@ -96,7 +98,7 @@ void Main_Menu() {
 void Draw_Map(int rowSize, int colSize, int playerPositionCol, int playerPositionRow) {
 	clearscreen();
 
-	//Keeps map in top left. Change 0 0 to whatever to have map in another spot.
+	//Keeps map in top left. TODO: Change 0 0 to whatever to have map in another spot.
 	movecursor(0, 0);
 
 	//Prints map out. Repeats printing one row and all columns.

@@ -1,8 +1,8 @@
 //Partners: Declan Doss, Vahan Avetisyan, Khushkaranpreet Grewal, Andrew Smith
-//Bullet Points: Declan (World Map, Puzzles), Vahan (Dialogue), Khush (World Map), Andrew (Puzzles) //TODO: Update these before submission.
+//Bullet Points: Declan (World Map, Puzzles, Combat), Vahan (Dialogue), Khush (World Map), Andrew (Puzzles) //TODO: Update these before submission.
 //Extra Credit: Khush (Cover art/music), [Name] (Inventory system)
 //URL to cover art: https://cdn.discordapp.com/attachments/1014310924435324979/1022972858617573386/76E1530D-419C-477F-A719-F8D47818B0DB.png
-//URL to music:
+//URL to music: https://youtu.be/V8_kwrMaoaM
 
 #include <iostream>
 #include <unistd.h>
@@ -10,17 +10,17 @@
 using namespace std;
 
 //Global vector. Any function can access it.
-//Current: 202 x 42 map. 200 x 40 playable area. NOTE: Player moves 1 on the y axis, 2 on the x axis; this is to make the x and y feel similar. TODO: Change/fill in later; make lore friendly.
+//Current: 202 x 42 map. 200 x 40 playable area. NOTE: Player moves 1 on the y axis, 2 on the x axis; this is to make the x and y feel similar.
 vector<string> worldMap = { //VERY IMPORTANT NOTE: For every extra special character (i.e. \, ", ') to make it appear on screen, you must add that many spaces. Will run into out of bounds errors otherwise.
 	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
 	"*                                                                                  _/              /                                                                                                        *",
 	"*             /\\         /\\                                                       /               |                                                                                                         *",
 	"*            /  \\       /  \\                                                    _/               /                                                                                                          *",
-	"*            |/\\|       |/\\|                                                   /                /                                                                                                           *",
-	"*            |--|       |--|                                               ___/               /                                                                                                             *",
-	"*       /----|  |-------|  |----\\                                       __/                  |                                                                                                              *",
-	"*       |                       |                                      /                    /                                                                                                               *",
-	"*       |                       |                                    _/                    /                                                                                                                *",
+	"*            |/\\|       |/\\|                                                   /                /                                        /\\                                                                 *",
+	"*            |--|       |--|                              /\\               ___/               /                                         /  \\                                                                *",
+	"*       /----|  |-------|  |----\\                        /  \\           __/                  |                                          |  |                                                                *",
+	"*       |                       |                        |  |          /                    /                                           |__|                                                                *",
+	"*       |                       |                        |__|        _/                    /                                                                                                                *",
 	"*       |          __           |                                  _/                     |                                                                                                                 *",
 	"*       |         /  \\          |                                /                      _/                                                                                                                  *",
 	"*       |         |  |          |                                |                     |                                                                                                                    *",
@@ -31,14 +31,14 @@ vector<string> worldMap = { //VERY IMPORTANT NOTE: For every extra special chara
 	"*                 ^      ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^    = = = = = = = = = = = = = = =    ^ ^ ^ ^ ^ ^ ^                                                                                                *",
 	"*                  ^                                         |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|                 ^                                                                                              *",
 	"*                   ^                                       /   |                     |     \\                 ^                                                                                             *",
-	"*                     ^                                    /    |         R            |     \\                  ^                                                                                           *",
-	"*                       ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^     |         I             |       ^ ^ ^ ^ ^          ^                                                                                        *",
-	"*                                                               |         V              |                ^          ^                                                                                      *",
-	"*                                                                |        E               |                ^           ^ ^ ^ ^ ^                                                                            *",
-	"*                                                                 |       R                |                 ^                   ^                                                                          *",
-	"*                                                                 |                        |                   ^                   ^                                                                        *",
-	"*                                                                  |                       |                     ^                   ^                                                                      *",
-	"*                                                                   |                       |                      ^ ^ ^ ^             ^ ^                                                  ""Help me!""        *",
+	"*                     ^                                    /    |                      |     \\                  ^                                                                                           *",
+	"*                       ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^     |                       |       ^ ^ ^ ^ ^          ^                                                          /\\                            *",
+	"*                                                               |                        |                ^          ^                                                       /  \\                           *",
+	"*                                                                |                        |                ^           ^ ^ ^ ^ ^                                             |  |                           *",
+	"*                                                                 |                        |        /\\      ^                   ^                                            |__|                           *",
+	"*                                                                 |                        |       /  \\       ^                   ^                                                                         *",
+	"*                                                                  |                       |       |  |          ^                   ^                                                                      *",
+	"*                                                                   |                       |      |__|            ^ ^ ^ ^             ^ ^                                                  ""Help me!""        *",
 	"*                                                                    |                       |                             ^               ^                                                   __           *",
 	"*                                                                     |                       |                              ^               ^                                                /  \\          *",
 	"*                                                                    |                         |                               ^               ^ ^ ^ ^ ^                                     /    \\         *",
@@ -48,35 +48,33 @@ vector<string> worldMap = { //VERY IMPORTANT NOTE: For every extra special chara
 	"*                                                                   |                          |                                          ^ ^ ^ ^ ^ ^         ^                           |  |____|  |      *",
 	"*                                                                  |                          |                                                       ^        ^                          |          |      *",
 	"*                                                                 |                          |                                                         ^       ^                          |          |      *",
-	"*   /\\                                                          |                          |                                                           ^        ^                         |          |      *",
-	"*  /  \\                                                        |                          |                                                              ^        ^ ^ ^ ^                 |          |      *",
-	"*  |  |                                                         |                          |                                                               ^               ^ ^ ^ ^ ^ ^ ^ ^|          |      *",
-	"*  |__|                                                         |                          |                                                                 ^                            |          |      *",
+	"*      /\\                                                       |                          |                                                           ^        ^                         |          |      *",
+	"*     /  \\                                                     |                          |                                                              ^        ^ ^ ^ ^                 |          |      *",
+	"*     |  |                                                      |                          |                                                               ^               ^ ^ ^ ^ ^ ^ ^ ^|          |      *",
+	"*     |__|                                                      |                          |                                                                 ^                            |          |      *",
 	"*                                                              |                          |                                                                    ^                          |          |      *",
 	"*                                                             |                          |                                                                       ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^|          |      *",
 	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
 };
 
 //Global boolean. Necessary for Tower_Sequence to occur.
-//Boolean is used to keep track whether a puzzle has been done or not. If it has, value will change to true in Update_Map.
+//Boolean is used to keep track whether a puzzle has been done or not. If it has, value will change to true in Update_Game.
 bool puzzleOneDone = false, puzzleTwoDone = false, puzzleThreeDone = false, puzzleFourDone = false, puzzleFiveDone = false;
 
 //Declarations of functions used below. NECESSARY!!!
 void Main_Menu();
 void Introduction();
 void Draw_Map(int rowSize, int colSize, int playerPositionCol, int playerPositionRow);
-void Update_Map();
+void Update_Game();
 void Puzzle_One();
 void Puzzle_Two();
 void Puzzle_Three();
 void Puzzle_Four();
 void Puzzle_Five();
 void Tower_Sequence();
-void die();
 void Utility_Map_Settings();
 void Utility_Text_Settings();
-
-
+void Utility_Press_E_To_Continue();
 
 //Main acts as a driver program.
 int main() {
@@ -87,10 +85,10 @@ int main() {
 	//Calls Introduction function to give exposition before putting player onto the map.
 	Introduction();
 
-	//Set cursor mode to false for it to not appear on screen and call Update_Map to draw map.
-	//NOTE: Update_Map integrates the whole program together, so it acts as main in a sense. FIXME: Maybe change the aformentioned later?
+	//Set cursor mode to false for it to not appear on screen and call Update_Game to draw map.
+	//NOTE: Update_Game integrates the whole program together, so it acts as main in a sense.
 	set_cursor_mode(false);
-	Update_Map();
+	Update_Game();
 
 	//Clean up after yourself.
 	Utility_Text_Settings();
@@ -113,14 +111,14 @@ void Main_Menu() {
 	//Same goes for below print statements; adjust them to fit where on the screen you want them to be.
 	movecursor(y, x - 9);
 	//TODO: Change title and emoji.
-	cout << "Welcome to the GAME!!!👀" << endl;
+	cout << "Welcome to the GAME!!!👀\n";
 
 	movecursor(y + 3, x - 11);
 	//TODO: Remove emoji if possible.
-	cout << "Press 'p' to start the game😉" << endl;
+	cout << "Press 'p' to start the game😉\n";
 
 	movecursor(y + 6, x - 10);
-	cout << "Press 'q' to quit the game" << endl;
+	cout << "Press 'q' to quit the game\n";
 
 	set_cursor_mode(false);
 	set_raw_mode(true);
@@ -146,11 +144,11 @@ void Introduction() {
 void Draw_Map(int rowSize, int colSize, int playerPositionCol, int playerPositionRow) {
 	clearscreen();
 
-	//Keeps map in top left. TODO: Change 0 0 to whatever to have map in another spot.
+	//Keeps map in top left.
 	movecursor(0, 0);
 
 	//FIXME: I want to access the char where the player's coordinates are so that if they're one of the building chars, we can stop them from going in. Basically a from-scratch clamp function that's supposed to be quicker.
-	//NOTE FOR FIXME: If this code is uncommented, "int previousPlayerCol" and "int previousPlayerRow" needs to be passed in Draw_Map from Update_Map and included in the above Draw_Map function definition.
+	//NOTE FOR FIXME: If this code is uncommented, "int previousPlayerCol" and "int previousPlayerRow" needs to be passed in Draw_Map from Update_Game and included in the above Draw_Map function definition.
 	/*	char temp = worldMap.at(playerPositionCol).at(playerPositionRow);
 		cout << temp << " " << endl;
 		if (temp == '/' or temp == '\\' or temp == '|' or temp == '-' or temp == '_' or temp == '=') {
@@ -161,8 +159,27 @@ void Draw_Map(int rowSize, int colSize, int playerPositionCol, int playerPositio
 //Prints map out. Repeats printing one row and all columns.
 	for (size_t row = 0; row <= rowSize; row++) {
 		for (size_t col = 0; col <= colSize; col++) {
-			if (col == playerPositionCol and row == playerPositionRow) cout << "P"; //TODO: Change player icon.
-			else if (worldMap.at(row) == "/" and worldMap.at(col) == "/") cout << CYAN << worldMap.at(row).at(col);
+			//Prints player location.
+			if (col == playerPositionCol and row == playerPositionRow) cout << "P";
+			//Makes path (i.e. the ^ symbols) bold green.
+			else if (worldMap.at(row).at(col) == '^') cout << BOLDGREEN << worldMap.at(row).at(col) << RESET;
+			//Makes puzzle hut 1 (in bottom left) bold magenta.
+			else if ((row >= 36 and row <= 39) and (col >= 6 and col <= 9)) cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
+			//Makes puzzle hut 2 (top side of river, on the left) bold magenta.
+			else if ((row >= 5 and row <= 8) and (col >= 57 and col <= 60)) cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
+			//Makes puzzle hut 3 (bottom side of river, on the right) bold magenta.
+			else if ((row >= 23 and row <= 26) and (col >= 99 and col <= 102)) cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
+			//Makes puzzle hut 4 (top side of river, on the right) bold magenta.
+			else if ((row >= 4 and row <= 7) and (col >= 135 and col <= 139)) cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
+			//Makes puzzle hut 5 (closest to the tower) bold magenta.
+			else if ((row >= 20 and row <= 23) and (col >= 172 and col <= 176)) cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
+			//Makes river boundaries above bridge bold cyan.
+			else if ((row >= 1 and row <= 11) and (col >= 64 and col <= 100)) cout << BOLDCYAN << worldMap.at(row).at(col) << RESET;
+			//Makes river boundaries below bridge bold cyan.
+			else if ((row >= 18 and row <= 41) and (col >= 62 and col <= 95) and (worldMap.at(row).at(col) != '\\')) cout << BOLDCYAN << worldMap.at(row).at(col) << RESET;
+			//Makes tower bold red.
+			else if ((row >= 27 and row <= 41) and (col >= 186 and col <= 197)) cout << BOLDRED << worldMap.at(row).at(col) << RESET;
+			//Else prints map at default coloring.
 			else cout << worldMap.at(row).at(col);
 		}
 		cout << endl;
@@ -170,7 +187,7 @@ void Draw_Map(int rowSize, int colSize, int playerPositionCol, int playerPositio
 }
 
 //Updates the values to pass to Draw_Map when player moves.
-void Update_Map() {
+void Update_Game() {
 	//Define how many rows/cols there are.
 	const int rowSize = worldMap.size() - 1, colSize = worldMap.at(rowSize).size() - 1;
 	//Spawns player at the castle doors (19th column, 13th row).
@@ -197,53 +214,44 @@ void Update_Map() {
 			currentPlayerCol = clamp(currentPlayerCol, 1, colSize - 1);
 			currentPlayerRow = clamp(currentPlayerRow, 1, rowSize - 1);
 
-			//NOTE FOR BELOW: Else ifs are used because only one can happen at a time (player can only be at one location at a time). There's no reason to check the other statements because of that.
-			//Puzzle 1 call (for house in bottom left).
-			if ((currentPlayerCol >= 3 and currentPlayerCol <= 6) and (currentPlayerRow >= 36 and currentPlayerRow <= 39) and puzzleOneDone == false) {
+			//NOTE FOR BELOW: Else ifs are used because only one can happen at a time (i.e. player can only be at one location at a time). There's no reason to check the other statements because of that.
+			//Puzzle 1 call (for hut in bottom left).
+			if ((currentPlayerCol >= 6 and currentPlayerCol <= 9) and (currentPlayerRow >= 36 and currentPlayerRow <= 39) and puzzleOneDone == false) {
 				Puzzle_One();
-				puzzleOneDone = true;
 				currentPlayerRow = previousPlayerRow;
 				currentPlayerCol = previousPlayerCol;
 				Draw_Map(rowSize, colSize, currentPlayerCol, currentPlayerRow);
 			}
-			//TODO: Will have to repeat the above if statement similarly for each puzzle.
-			//Puzzle 2 call (for []).
-			/***********else if () {
-							Puzzle_Two();
-							puzzleTwoDone = true;
-							currentPlayerRow = previousPlayerRow;
-							currentPlayerCol = previousPlayerCol;
-							Draw_Map(rowSize, colSize, currentPlayerCol, currentPlayerRow);
-						}
-						//Puzzle 3 call (for []).
-						else if () {
-							Puzzle_Three();
-							puzzleThreeDone = true;
-							currentPlayerRow = previousPlayerRow;
-							currentPlayerCol = previousPlayerCol;
-							Draw_Map(rowSize, colSize, currentPlayerCol, currentPlayerRow);
-
-						}
-						//Puzzle 4 call (for []).
-						else if () {
-							Puzzle_Four();
-							puzzleFourDone = true;
-							currentPlayerRow = previousPlayerRow;
-							currentPlayerCol = previousPlayerCol;
-							Draw_Map(rowSize, colSize, currentPlayerCol, currentPlayerRow);
-
-						}
-						//Puzzle 5 call (for []).
-						else if () {
-							Puzzle_Five();
-							puzzleFiveDone = true;
-							currentPlayerRow = previousPlayerRow;
-							currentPlayerCol = previousPlayerCol;
-							Draw_Map(rowSize, colSize, currentPlayerCol, currentPlayerRow);
-
-						}*********************************/
-			//Checks whether user can enter the tower or not. Area where they can enter in the line of the tower that the path leads to (184th column, and 38th-41st row). //TODO: Check to make sure this works (can't check rn as other puzzles aren't finished).
-			else if ((puzzleOneDone == true and puzzleTwoDone == true and puzzleThreeDone == true and puzzleFourDone == true and puzzleFiveDone == true) and (currentPlayerCol >= 184 and currentPlayerCol <= 195) and (currentPlayerRow >= 38 and currentPlayerRow <= 41)) {
+			//Puzzle 2 call (for hut top side river, on left).
+			else if ((currentPlayerCol >= 57 and currentPlayerCol <= 60) and (currentPlayerRow >= 5 and currentPlayerRow <= 8) and puzzleTwoDone == false) {
+				Puzzle_Two();
+				currentPlayerRow = previousPlayerRow;
+				currentPlayerCol = previousPlayerCol;
+				Draw_Map(rowSize, colSize, currentPlayerCol, currentPlayerRow);
+			}
+			//Puzzle 3 call (for hut bottom side river, on right).
+			else if ((currentPlayerCol >= 99 and currentPlayerCol <= 102) and (currentPlayerRow >= 23 and currentPlayerRow <= 26) and puzzleThreeDone == false) {
+				Puzzle_Three();
+				currentPlayerRow = previousPlayerRow;
+				currentPlayerCol = previousPlayerCol;
+				Draw_Map(rowSize, colSize, currentPlayerCol, currentPlayerRow);
+			}
+			//Puzzle 4 call (for hut top side river, on right).
+			else if ((currentPlayerCol >= 136 and currentPlayerCol <= 139) and (currentPlayerRow >= 4 and currentPlayerRow <= 7) and puzzleFourDone == false) {
+				Puzzle_Four();
+				currentPlayerRow = previousPlayerRow;
+				currentPlayerCol = previousPlayerCol;
+				Draw_Map(rowSize, colSize, currentPlayerCol, currentPlayerRow);
+			}
+			//Puzzle 5 call (for hut closest to tower).
+			else if ((currentPlayerCol >= 172 and currentPlayerCol <= 176) and (currentPlayerRow >= 20 and currentPlayerRow <= 23) and puzzleFiveDone == false) {
+				Puzzle_Five();
+				currentPlayerRow = previousPlayerRow;
+				currentPlayerCol = previousPlayerCol;
+				Draw_Map(rowSize, colSize, currentPlayerCol, currentPlayerRow);
+			}
+			//Checks whether user can enter the tower or not. Area where they can enter in the line of the tower that the path leads to (184th column, and 38th-41st row).
+			else if ((puzzleOneDone == true and puzzleTwoDone == true and puzzleThreeDone == true and puzzleFourDone == true and puzzleFiveDone == true) and (currentPlayerCol == 185) and (currentPlayerRow >= 38 and currentPlayerRow <= 41)) {
 				Tower_Sequence();
 				return;
 			}
@@ -262,84 +270,148 @@ void Update_Map() {
 void Puzzle_One() {
 	Utility_Text_Settings();
 
-	int puzzleAnswer = 18, userInput = 0;
+	unsigned short puzzleAnswer = 18, userInput = 0;
 
-	//TODO: Make text pretty when printed to screen. Applies for all text in this function.
-	cout << "In an ancient wall drawing, you find images depicting a item appearing from the wall. This item seems to only be able to be accessed after solving a math problem. As you look around, hidden in a dark corner, a problem bleeds out, ""Solve the problem to pass the test: (5 * 2) (8 / 4) + 3 + 7 - 12"". What do you believe the answer to be?" << endl;
+	cout << "As you walk towards a wall of rock, you notice an entrance. Deciding to enter, you head into the bowels of the Earth.\n" << "Inside, you find an ancient wall drawing, with images depicting a item appearing from the stone.\n" << "This item seems to only be able to be accessed after solving a math problem.\n" << "As you look around, something catches your eye. A math equation bleeds out from a dark and gloomy corner: \n\n" << "    ""Solve the problem to pass the test: (5 * 2) (8 / 4) + 3 + 7 - 12""\n\n" << "What do you believe the answer to be?\n";
 	cin >> userInput;
-	if (!cin) die();
 
 	while (userInput != puzzleAnswer) {
-		cout << "You enter your answer and...nothing happens. It seems you were wrong. Thinking again, what do you believe the answer is?" << endl;
+		//Clears cin's error flag when userInput is not an acceptable input.
+		cin.clear();
+		//Throws out user input if not a positive number.
+		//100000 parameter is larger than the size of an unsigned short, so a user cannot give more inputs than cin.ignore can handle.
+		//Backslash n is where the cin.ignore stops reading.
+		cin.ignore(100000, '\n');
+
+		cout << endl << "You enter your answer and...nothing happens. It seems you were wrong.\n" << "Thinking again, what do you believe the answer is?\n";
 		cin >> userInput;
-		if (!cin) die();
 	}
 
-	cout << "As you hear rock scraping against rock, it turns out your answer proved fruitful! Walking over and peering into the box turns up an old key. I wonder what that's used for..." << endl;
-	cout << "Press E to go back to the map." << endl;
-	set_raw_mode(true);
-	while (true) {
-		int keyPress = quick_read();
-		if (keyPress == 'e' or keyPress == 'E') break;
-	}
+	cout << "\nAs you hear rock scraping against rock, it turns out your answer proved fruitful!\n" << "Walking over and peering into the box turns up an old key. I wonder what that's used for...\n";
+
+	puzzleOneDone = true;
+
+	Utility_Press_E_To_Continue();
 
 	Utility_Map_Settings();
 }
 
-//TODO: Define what kind of puzzle it is.
+//Traditional riddle.
 void Puzzle_Two() {
 	Utility_Text_Settings();
-	/*
-		//TODO: Declare variables (if needed) here.
 
-		//TODO: Make text pretty when printed to screen. Applies for all text in this function.
-	//TODO:	cout << [Riddle text/lore/whatever here] << endl;
-		cin >> userInput;
-		if (!cin) die();
+	string puzzleAnswer = "newspaper", userInput;
 
-		while (userInput != puzzleAnswer) {
-	//TODO:		cout << [If user input is wrong, give them some feedback] << endl;
-			cin >> userInput;
-			if (!cin) die();
-		}
+	cout << "Entering an old hut, you find a skeleton, surrounded by scraps of what appears to be paper.\n" << "One of them appears legible, reading:\n\n" << "    What is white, black, and red all over?\n\n" << "Confused by the seemingly random question, you learn there's a basement that's locked.\n" << "Unable to open it, you walk back to the piece of paper.\n" << "What's ""white, black, and red all over"" you ponder.\n" << "Could it be a...";
 
-	//TODO:	cout << [When user gets it correct, tell them so!] << endl;
-	*/
-	cout << "Press E to go back to the map." << endl;
-	set_raw_mode(true);
-	while (true) {
-		int keyPress = quick_read();
-		if (keyPress == 'e' or keyPress == 'E') break;
+	cin >> userInput;
+
+	for (auto& ch : userInput) {
+		ch = tolower(ch);
 	}
+
+	while (userInput != puzzleAnswer) {
+		cin.clear();
+		//The 4.3 billion parameter is larger than the size of a string, so a user cannot give more input than cin.ignore can handle.
+		cin.ignore(4300000000, '\n');
+
+		cout << "Hmmm, no it couldn't be that. What about a...";
+		cin >> userInput;
+
+		for (auto& ch : userInput) {
+			ch = tolower(ch);
+		}
+	}
+
+	cout << "\nA rumbling begins, and you notice the door behind you opens.\n" << "Walking down the appearing stairs, you find an old key wrapped in a cloth. I wonder what that's used for...\n";
+
+	puzzleTwoDone = true;
+
+	Utility_Press_E_To_Continue();
 
 	Utility_Map_Settings();
 }
 
-//TODO: Define what kind of puzzle it is.
+//Door puzzle and Kerney fight.
 void Puzzle_Three() {
 	Utility_Text_Settings();
-	/*
-		//TODO: Declare variables (if needed) here.
 
-		//TODO: Make text pretty when printed to screen. Applies for all text in this function.
-	//TODO:	cout << [Riddle text/lore/whatever here] << endl;
+	srand(time(NULL));
+
+	string userInput, puzzleAnswer = "r";
+	int userHealth = 100, kerneyHealth = 100;
+
+	cout << "Walking underneath the bridge, you find an alcove. Coming closer, you notice there's an old door." << "\nBecoming curious, you enter, down the long and winding stariwell." << "\nEntering a room, you notice a slab of metal with engravings on it. Might be worth a pretty penny, you think as you pick it up." << "\nWalking farther in, you notice this seems to be an old catacomb, with offering to the deceased still left behind." << "\nExploring some more, you come up against a large door, seemingly impassible. The slab of metal you have looks like it might fit into the door.\n" << "Do you choose to insert it top, bottom, left, or right first? (t/b/l/r)\n";
+
+	cin >> userInput;
+
+	while (userInput != puzzleAnswer) {
+		cin.clear();
+		cin.ignore(4300000000, '\n');
+
+		cout << "\nThat didn't work, try again. Do you choose to insert it top, bottom, left, or right first? (t/b/l/r)\n";
 		cin >> userInput;
-		if (!cin) die();
+	}
 
-		while (userInput != puzzleAnswer) {
-	//TODO:		cout << [If user input is wrong, give them some feedback] << endl;
+	cout << "\nStanding stunnded, it actually works and the door begins to recede into the floor." << "\nWalking in, you notice the place looks ransacked. Intrigued, you continue on until you find..." << "\nWait is that Kerney? Is he the one who's been ransacking this place? Aghast, you go to confront him.\n";
+
+	//TODO: lore/story stuff
+
+	//Enter combat mode here.
+	while (userHealth > 0 or kerneyHealth > 0) {
+		cout << "What would you like to do?\n";
+		cout << "   A) Attack\n   B) Block\n";
+		cin >> userInput;
+
+		while (userInput != "a" and userInput != "b" and userInput != "A" and userInput != "B") {
+			cin.clear();
+			cin.ignore(4300000000, '\n');
 			cin >> userInput;
-			if (!cin) die();
 		}
 
-	//TODO:	cout << [When user gets it correct, tell them so!] << endl;
-	*/
-	cout << "Press E to go back to the map." << endl;
-	set_raw_mode(true);
-	while (true) {
-		int keyPress = quick_read();
-		if (keyPress == 'e' or keyPress == 'E') break;
+		clearscreen();
+		movecursor(0, 0);
+		//User's turn to attack or block.
+		if (userInput == "a" or userInput == "A") {
+			cout << "Attacking Kerney, you deal 25 damage!\n";
+			kerneyHealth -= 25;
+			if (kerneyHealth <= 0) kerneyHealth = 0;
+		} else if (userInput == "b" or userInput == "B") {
+			cout << "Blocking, you fortify by 10 points of health.\n";
+			userHealth += 10;
+			if (userHealth > 100) userHealth = 100;
+		}
+		cout << GREEN << "\nYour HP: " << userHealth << "/100\n";
+		cout << RED << "Kerney's HP: " << kerneyHealth << "/100\n" << RESET;
+		//If Kerney is defeated...
+		if (kerneyHealth <= 0) {
+			//TODO: Talking with Kerney about sparing him or not or whatever the lore will be.
+			cout << '\n';
+			break;
+		}
+
+		//Kerney's turn to attack or block.
+		if (rand() % 2 == 0) {
+			cout << "\nKerney blocks your next attack, fortifying by 10 health.\n";
+			kerneyHealth += 10;
+			if (kerneyHealth > 100) kerneyHealth = 100;
+		} else {
+			cout << "\nKerney attacks you, dealing 25 damage!\n";
+			userHealth -= 25;
+		}
+		cout << GREEN << "\nYour HP: " << userHealth << "/100\n";
+		cout << RED << "Kerney's HP: " << kerneyHealth << "/100\n" << RESET;
+		//If you die...
+		if (userHealth <= 0) {
+			cout << "You died, please try again!\n";
+			Utility_Map_Settings();
+			return;
+		}
 	}
+
+	puzzleThreeDone = true;
+
+	Utility_Press_E_To_Continue();
 
 	Utility_Map_Settings();
 }
@@ -347,6 +419,8 @@ void Puzzle_Three() {
 //TODO: Define what kind of puzzle it is.
 void Puzzle_Four() {
 	Utility_Text_Settings();
+
+	cout << "INSIDE PUZZLE 4!" << endl;
 	/*
 		//TODO: Declare variables (if needed) here.
 
@@ -363,12 +437,9 @@ void Puzzle_Four() {
 
 	//TODO:	cout << [When user gets it correct, tell them so!] << endl;
 	*/
-	cout << "Press E to go back to the map." << endl;
-	set_raw_mode(true);
-	while (true) {
-		int keyPress = quick_read();
-		if (keyPress == 'e' or keyPress == 'E') break;
-	}
+	puzzleFourDone = true;
+
+	Utility_Press_E_To_Continue();
 
 	Utility_Map_Settings();
 }
@@ -376,6 +447,8 @@ void Puzzle_Four() {
 //TODO: Define what kind of puzzle it is.
 void Puzzle_Five() {
 	Utility_Text_Settings();
+
+	cout << "INSIDE PUZZLE 5!" << endl;
 	/*
 		//TODO: Declare variables (if needed) here.
 
@@ -391,12 +464,9 @@ void Puzzle_Five() {
 		}
 	//TODO:	cout << [When user gets it correct, tell them so!] << endl;
 	*/
-	cout << "Press E to go back to the map." << endl;
-	set_raw_mode(true);
-	while (true) {
-		int keyPress = quick_read();
-		if (keyPress == 'e' or keyPress == 'E') break;
-	}
+	puzzleFiveDone = true;
+
+	Utility_Press_E_To_Continue();
 
 	Utility_Map_Settings();
 }
@@ -406,12 +476,6 @@ void Tower_Sequence() {
 
 	//TODO: The final tower sequence will have to be purely text based unfortunately. So do the explanation/lore/whatever and do the whole sequence of walking up to Stallman blah blah blah.
 	//TODO: ONCE THE PUZZLE WHERE YOU FIGHT KERNEY IS DONE, I'LL ADD AN IF STATEMENT FOR THE TWO SEPARATE ENDINGS: ONE WHERE KERNEY STEALS HIM FROM YOU AND THE OTHER WHERE YOU GET TO KEEP HIM.
-}
-
-//NOTE: Unfortunately at the moment, I can't figure out a way to check user input so die() is used in place when user input needs to be something specific.
-void die() {
-	cout << "BAD INPUT!" << endl;
-	exit(1);
 }
 
 //Sets settings to what they need to be for map to work properly.
@@ -430,4 +494,15 @@ void Utility_Text_Settings() {
 	resetcolor();
 	clearscreen();
 	movecursor(0, 0);
+}
+
+//Used to not repeat code in puzzle functions.
+void Utility_Press_E_To_Continue() {
+	cout << "Press E to return to the map." << endl;
+
+	set_raw_mode(true);
+	while (true) {
+		int keyPress = quick_read();
+		if (keyPress == 'e' or keyPress == 'E') break;
+	}
 }

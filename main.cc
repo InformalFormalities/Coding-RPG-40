@@ -1,3 +1,5 @@
+//FINAL TODO: REMOVE ALL TODO 's and FIXME 's before you copy this file to RPG-40/.
+
 //Partners: Declan Doss, Vahan Avetisyan, Khushkaranpreet Grewal, Andrew Smith
 //Bullet Points: Declan (World Map, Puzzles, Combat), Vahan (Dialogue), Khush (World Map), Andrew (Puzzles) //TODO: Update these before submission.
 //Extra Credit: Khush (Cover art/music), [Name] (Inventory system)
@@ -5,7 +7,6 @@
 //URL to music: https://youtu.be/V8_kwrMaoaM
 
 #include <iostream>
-#include <unistd.h>
 #include "/public/colors.h"
 using namespace std;
 
@@ -60,6 +61,8 @@ vector<string> worldMap = { //VERY IMPORTANT NOTE: For every extra special chara
 //Global boolean. Necessary for Tower_Sequence to occur.
 //Boolean is used to keep track whether a puzzle has been done or not. If it has, value will change to true in Update_Game.
 bool puzzleOneDone = false, puzzleTwoDone = false, puzzleThreeDone = false, puzzleFourDone = false, puzzleFiveDone = false;
+//Kerney is alive by default.
+bool kerneyAlive = true;
 
 //Declarations of functions used below. NECESSARY!!!
 void Main_Menu();
@@ -76,8 +79,13 @@ void Utility_Map_Settings();
 void Utility_Text_Settings();
 void Utility_Press_E_To_Continue();
 
+
+
 //Main acts as a driver program.
 int main() {
+
+	//Seeding for later use (in puzzle 3 & 4).
+	srand(time(NULL));
 
 	//Calls Main_Menu function to print out the main menu so it's the first screen user sees.
 	Main_Menu();
@@ -109,16 +117,14 @@ void Main_Menu() {
 
 	//Places cursor in the middle. x must be changed to accomodate for movecursor putting the "W" in the middle, not the sentence in the middle.
 	//Same goes for below print statements; adjust them to fit where on the screen you want them to be.
-	movecursor(y, x - 9);
-	//TODO: Change title and emoji.
-	cout << "Welcome to the GAME!!!👀\n";
+	movecursor(y, x - 15);
+	cout << BOLDYELLOW << "Stolen Seduction: Stallman Edition\n" << RESET;
 
-	movecursor(y + 3, x - 11);
-	//TODO: Remove emoji if possible.
-	cout << "Press 'p' to start the game😉\n";
+	movecursor(y + 3, x - 12);
+	cout << "Press" << GREEN << " 'p' " << RESET << "to start the game\n";
 
-	movecursor(y + 6, x - 10);
-	cout << "Press 'q' to quit the game\n";
+	movecursor(y + 6, x - 11);
+	cout << "Press" << RED << " 'q' " << RESET << "to quit the game\n";
 
 	set_cursor_mode(false);
 	set_raw_mode(true);
@@ -156,11 +162,13 @@ void Draw_Map(int rowSize, int colSize, int playerPositionCol, int playerPositio
 			playerPositionCol = previousPlayerCol;
 		} */
 
-//Prints map out. Repeats printing one row and all columns.
+	//Prints map out. Repeats printing one row and all columns.
 	for (size_t row = 0; row <= rowSize; row++) {
 		for (size_t col = 0; col <= colSize; col++) {
 			//Prints player location.
 			if (col == playerPositionCol and row == playerPositionRow) cout << "P";
+			//Makes castle bold black.
+			else if ((row >= 2 and row <= 12) and (col >= 8 and col <= 32)) cout << BOLDWHITE << worldMap.at(row).at(col) << RESET;
 			//Makes path (i.e. the ^ symbols) bold green.
 			else if (worldMap.at(row).at(col) == '^') cout << BOLDGREEN << worldMap.at(row).at(col) << RESET;
 			//Makes puzzle hut 1 (in bottom left) bold magenta.
@@ -266,7 +274,7 @@ void Update_Game() {
 	}
 }
 
-//Basic arithmatic puzzle.
+//Basic arithmetic puzzle.
 void Puzzle_One() {
 	Utility_Text_Settings();
 
@@ -336,8 +344,6 @@ void Puzzle_Two() {
 void Puzzle_Three() {
 	Utility_Text_Settings();
 
-	srand(time(NULL));
-
 	string userInput, puzzleAnswer = "r";
 	int userHealth = 100, kerneyHealth = 100;
 
@@ -385,7 +391,22 @@ void Puzzle_Three() {
 		cout << RED << "Kerney's HP: " << kerneyHealth << "/100\n" << RESET;
 		//If Kerney is defeated...
 		if (kerneyHealth <= 0) {
-			//TODO: Talking with Kerney about sparing him or not or whatever the lore will be.
+			string spareOrKill;
+			//TODO: Talking with Kerney about sparing him or not or whatever the lore will be. "As Kerney is defeated" or somethin.
+			cout << "Do you want to spare, or kill Kerney? (s/k)\n";
+			cin >> spareOrKill;
+
+			while (spareOrKill != "s" and spareOrKill != "S" and spareOrKill != "k" and spareOrKill != "K") {
+				cin.clear();
+				cin.ignore(4300000000, '\n');
+				cin >> spareOrKill;
+			}
+
+			if (spareOrKill == "k" or spareOrKill == "K") {
+				kerneyAlive = false;
+			}
+			//No else statement because kerneyAlive is by default set to true in global scope.
+
 			cout << '\n';
 			break;
 		}
@@ -405,9 +426,12 @@ void Puzzle_Three() {
 		if (userHealth <= 0) {
 			cout << "You died, please try again!\n";
 			Utility_Map_Settings();
-			return;
+			return; //...returns you to map and can retry again.
 		}
 	}
+
+	//TODO: Find an old key somehow.
+	cout << "Blah blah blah an old key\n";
 
 	puzzleThreeDone = true;
 
@@ -416,27 +440,40 @@ void Puzzle_Three() {
 	Utility_Map_Settings();
 }
 
-//TODO: Define what kind of puzzle it is.
+//"Answer is completely random" puzzle.
 void Puzzle_Four() {
 	Utility_Text_Settings();
 
-	cout << "INSIDE PUZZLE 4!" << endl;
-	/*
-		//TODO: Declare variables (if needed) here.
+	string userInput;
 
-		//TODO: Make text pretty when printed to screen. Applies for all text in this function.
-	//TODO:	cout << [Riddle text/lore/whatever here] << endl;
-		cin >> userInput;
-		if (!cin) die();
+	//TODO: Please fill the lore part in.
+	cout << "Entering a run down home, you notice some crap some other crap blah blah blah\n";
+	cout << "The puzzle reads: ""What does this spell? modnarsirewsnaeht""\n   A) The answer is random\n   B) The answer is random\n   C) The answer is random\n   D) The answer is random\n";
 
-		while (userInput != puzzleAnswer) {
-	//TODO:		cout << [If user input is wrong, give them some feedback] << endl;
-			cin >> userInput;
-			if (!cin) die();
+	cin >> userInput;
+
+	while (true) {
+		int puzzleAnswer = (rand() % 4) + 1;
+
+		if (puzzleAnswer == 1 and (userInput == "A" or userInput == "a")) {
+			break;
+		} else if (puzzleAnswer == 2 and (userInput == "B" or userInput == "b")) {
+			break;
+		} else if (puzzleAnswer == 3 and (userInput == "C" or userInput == "c")) {
+			break;
+		} else if (puzzleAnswer == 4 and (userInput == "D" or userInput == "d")) {
+			break;
 		}
 
-	//TODO:	cout << [When user gets it correct, tell them so!] << endl;
-	*/
+		cin.clear();
+		cin.ignore(4300000000, '\n');
+		cin >> userInput;
+	}
+
+	//TODO: Please fill this part in.
+	cout << "Blah blah blah lore stuff\n";
+	//Make sure to have a part about finding an old key. Use the phrasing "I wonder what that's used for..." at the end.
+
 	puzzleFourDone = true;
 
 	Utility_Press_E_To_Continue();
@@ -444,26 +481,26 @@ void Puzzle_Four() {
 	Utility_Map_Settings();
 }
 
-//TODO: Define what kind of puzzle it is.
+//HACKER-MAN!!!
 void Puzzle_Five() {
 	Utility_Text_Settings();
 
-	cout << "INSIDE PUZZLE 5!" << endl;
-	/*
-		//TODO: Declare variables (if needed) here.
+	string puzzleAnswer = "password", userInput;
 
-		//TODO: Make text pretty when printed to screen. Applies for all text in this function.
-	//TODO:	cout << [Riddle text/lore/whatever here] << endl;
+	cout << "A strange building resides next to the tower. Inside of it, you find a room full of...well, you're not quite sure.\n" << "There are many long wirey things around, and the walls are covered in an ugly beige coloring, with outcroppings all around\n" << "Looking around, you find what seems to be the centerpiece of the room, with a lot of things you can press. They move, so you decide to press them all to see what happens.\n" << "Hitting one button in particularl causes lights as bright as the sun to turn on. Panicking, you hide best you can in case someone comes.\n" << "After a bits hesitation, you step out and go to a thing that's displaying some words. Looking at it, it reads:\n\n" << """Please enter your password:""\n\n" << "What do you think this ""password"" might be?\n";
+
+	cin >> userInput;
+
+	while (userInput != puzzleAnswer) {
+		cin.clear();
+		cin.ignore(4300000000, '\n');
+		cout << "Words come up that read: ""ACCESS DENIED"", and you figure you got it wrong. What do you think this ""password"" could be?\n";
 		cin >> userInput;
-		if (!cin) die();
+	}
 
-		while (userInput != puzzleAnswer) {
-	//TODO:		cout << [If user input is wrong, give them some feedback] << endl;
-			cin >> userInput;
-			if (!cin) die();
-		}
-	//TODO:	cout << [When user gets it correct, tell them so!] << endl;
-	*/
+	//TODO: Add more here if you want.
+	cout << "It reads:\n" << "ACCESS GRANTED\n" << """Welcome Hackerman!""\n" << "At the same time that appears, a drawer opens up, revealing an old key. I wonder what that's used for...\n";
+
 	puzzleFiveDone = true;
 
 	Utility_Press_E_To_Continue();
@@ -474,8 +511,14 @@ void Puzzle_Five() {
 void Tower_Sequence() {
 	Utility_Text_Settings();
 
+	//If kerneyAlive is set to true...
+	if (kerneyAlive) {
+		//TODO: Ending for if Kerney is alive.
+	} else { //Else if kerneyAlive isn't true...
+		//TODO: Ending for if Kerney is dead.
+	}
+
 	//TODO: The final tower sequence will have to be purely text based unfortunately. So do the explanation/lore/whatever and do the whole sequence of walking up to Stallman blah blah blah.
-	//TODO: ONCE THE PUZZLE WHERE YOU FIGHT KERNEY IS DONE, I'LL ADD AN IF STATEMENT FOR THE TWO SEPARATE ENDINGS: ONE WHERE KERNEY STEALS HIM FROM YOU AND THE OTHER WHERE YOU GET TO KEEP HIM.
 }
 
 //Sets settings to what they need to be for map to work properly.

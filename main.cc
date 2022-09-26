@@ -145,6 +145,16 @@ void Introduction() {
 	//TODO: Introduce player to world and exposition stuff.
 	//LORE NOTE: PLAYER STARTS AT THE GATES OF THE CASTLE, DON'T CONTRADICT THAT STARTING POSITION PLEASE. (Compile and run program to see where if needed.)
 }
+cout << "Thank you for coming on a short notice, our kingdom is falling apart by Bill Kerney." << endl;
+cout << "Kerney has wanting revenge for 10 years now and seems like e is getting ready for his attacks." << endl;
+cout << "If we want stop Kerney you will have to get weapons, swords, and sheilds." << endl;
+cout << "I am a craftsman and will help you improve your weaponry, you will have to gather resources for that. The more resources the better I can make your equpitment. There are also potions around the kingdom which you can collect." << endl;
+cout << "What about Kerney, what is his background." endl;
+cout << "He was not always on the dark side, he was the kings right hand man. he knows everything about the kingdom and how it opperates." << endl;
+cout << "Do you know what he has been planning for his attacks." << endl;
+cout << "All I know is that he has traps placed around the kingdomin terms of riddles and puzzles. And he is after the kings son, Stallman." endl;
+cout << "Now go and explore the kingdom and gather resources and clues to stop Kerney." endl;
+cout << "You can find me in my workshop. I'm Mencarelli by the way." << endl;
 
 //Draws the map initially, and when player moves.
 void Draw_Map(int rowSize, int colSize, int playerPositionCol, int playerPositionRow) {
@@ -362,6 +372,38 @@ void Puzzle_Three() {
 	cout << "\nStanding stunnded, it actually works and the door begins to recede into the floor." << "\nWalking in, you notice the place looks ransacked. Intrigued, you continue on until you find..." << "\nWait is that Kerney? Is he the one who's been ransacking this place? Aghast, you go to confront him.\n";
 
 	//TODO: lore/story stuff
+	cout << "Hey I've been taking care of these traps and almost had Kerney. He escaped." << endl;
+	cout << "Don't worry about that right now. Stallman came up to me and told me to tell you that he wants to meet you in the castle. I'm thining it's about Kerney." << endl;
+	cout << "Prince Stallman you wanted to see me." << endl;
+	cout << "Yes, good to finally see you, I wanted to thank you on taking care of the traps throughout the kingdom." << endl;
+	cout << "I had a chance to kill him and didn't." << endl;
+	cout << "(Throat clearing) Am I interupting an important conversation?" << endl;
+	cout << "Kerney! What are you dong here? How did you get inside the castle?" << endl;
+	cout << "Oh I guess you have forgotten that I was once part of this royalty and my way around." << endl;
+	cout << "I won't let you get to Stallman." << endl;
+	cout << "Hahahaha, you are just a week little warrior." << endl;
+
+	cout << "Mencarelli Kerney took Stallman I don't know where, probably already killed him." << endl;
+	cout << "Don't jump to conclutions boy. When Kerney was exceiled to the edges of the kingdom, he built a tower. He must be there. Now go!" << endl;
+	cout << "Stallman, are you there!" << endl;
+	cout << "Yes I am here. I am locked up. Watch out for Kerney." << endl;
+	cout << "I know it wouldn't take you long to come here boy." << endl;
+	cout << "You don't have to do all this Kerney." << endl;
+	cout << "Your right, I don't have to. I WANT TO DO ALL THIS! You want to stop me, then come and stop me." << endl;
+	cout << "It's over Stallman, you're safe." endl;
+	cout << "Ah thank you boy. How came I ever repay you?" << endl;
+	cout << "You don't have to. Let's get out of here." << endl;
+
+	cout << "Stallman, are you there!" << endl;
+	cout << "Yes, I'm here. Don't worry about me." << endl;
+	cout << "There you are. What do you mean not to worry about you? I came all this way to save you and this what you say." << endl;
+	cout << "Yes because I love Kerney and I'm going to be with him for the rest of my life." << endl;
+	cout << "What is this nonsense? What spell have you put on Stallman Kerney?" << endl;
+	cout << "Oh boy you never learned. I have no spell on Stallman." << endl;
+	cout << "Oh my god you both have lost your minds." << endl;
+	cout << "No we haven't. We're just in love." << endl;
+	cout << "I'm getting the heck out of here." << endl;
+	cout << "And make sure you lock the door behind you." << endl;
 
 	//Enter combat mode here.
 	while (userHealth > 0 or kerneyHealth > 0) {

@@ -381,10 +381,10 @@ void Puzzle_Three() {
 
 	while (userHealth > 0 or kerneyHealth > 0) {
 		cout << BOLDWHITE << "What would you like to do?\n" << RESET;
-		cout << BOLDRED << "   A) Attack\n" << BOLDBLUE << "   B) Block\n" << RESET;
+		cout << BOLDRED << "   A) Attack\n" << BOLDBLUE << "   B) Block\n" << YELLOW << "   C) Send an extinction level asteroid into the Earth\n" << RESET;
 		cin >> userInput;
 
-		while (userInput != "a" and userInput != "b" and userInput != "A" and userInput != "B") {
+		while (userInput != "a" and userInput != "b" and userInput != "A" and userInput != "B" and userInput != "c" and userInput != "C") {
 			cin.clear();
 			cin.ignore(4300000000, '\n');
 			cin >> userInput;
@@ -401,9 +401,19 @@ void Puzzle_Three() {
 			cout << BOLDBLUE << "Blocking, you fortify by 10 points of health.\n" << RESET;
 			userHealth += 10;
 			if (userHealth > 100) userHealth = 100;
+		} else {
+			cout << BOLDWHITE << "Wow, asshole much? Taking the whole world with you just because you don't want to fight Kerney? Shame man, shame.\n" << RESET;
+
+			Utility_Press_E_To_Continue();
+
+			Utility_Text_Settings();
+
+			exit(0);
 		}
+
 		cout << GREEN << "\nYour HP: " << userHealth << "/100\n";
 		cout << RED << "Kerney's HP: " << kerneyHealth << "/100\n" << RESET;
+
 		//If Kerney is defeated...
 		if (kerneyHealth <= 0) {
 			string spareOrKill;
@@ -479,6 +489,13 @@ void Puzzle_Three() {
 		if (userHealth <= 0) {
 			Utility_Map_Settings();
 			cout << BOLDWHITE << "You died, please try again!\n" << RESET;
+			clearscreen();
+			movecursor(0, 0);
+
+			cout << BOLDWHITE << "Waking up, you notice you're back at the castle.\n";
+			cout << "Must have been a dream, dying in a catacomb to Kerney.\n";
+			cout << "I still need to take care of that puzzle on the right side of the bridge, you think as you walk outside the castle.\n" << RESET;
+
 			Utility_Press_E_To_Continue();
 			return; //...returns you to map and can retry again.
 		}
@@ -566,9 +583,11 @@ void Puzzle_Five() {
 void Tower_Sequence() {
 	Utility_Text_Settings();
 
+	string userInput;
+
 	//If kerneyAlive is set to true...
 	if (kerneyAlive) {
-		cout << "You: Stallman, are you there!\n\n";
+		cout << "You: Stallman, are you there?\n\n";
 		cout << "Stallman: Yes, I'm here. Don't worry about me.\n\n\n";
 		cout << BOLDWHITE << "As you open the door to the tower and make your way inside, you eventually reach the top.\n\n\n" << RESET;
 		cout << "Kerney: There you are. What do you mean not to worry about you? I came all this way to save you and this what you say.\n\n";
@@ -576,20 +595,31 @@ void Tower_Sequence() {
 		cout << "You: What is this nonsense? What spell have you put on Stallman Kerney?\n\n";
 		cout << "Kerney: Oh boy you never learned. I have no spell on Stallman.\n\n";
 		cout << "You: Oh my god you both have lost your minds.\n\n";
-		cout << "Stallman: No we haven't. We're just in love.\n\n";
+		cout << "Stallman: No we haven't. We're just in love. Isn't Kerney just the most handsomestest?\n\n";
+
+		cout << BOLDWHITE << "\nDo you concur? (y/n)\n\n" << RESET;
+		cin >> userInput;
+
+		while (userInput != "yes" and userInput != "Yes" and userInput != "y" and userInput != "Y") {
+			cin.clear();
+			cin.ignore(4300000000, '\n');
+			cout << BOLDWHITE << "\nWrong answer bucko, try again.\n" << RESET;
+			cin >> userInput;
+		}
+
+		cout << "\nYou: Yes he is the most handsomestest.\n\n";
+		cout << BOLDWHITE << "Startled and unaware of why you just said that, you decide to leave.\n" << RESET;
 		cout << "You: I'm getting the heck out of here.\n\n";
-		cout << "Stallman: And make sure you lock the door behind you!\n\n";
+		cout << "Stallman: And make sure you lock the door behind you!\n";
 
 		Utility_Press_E_To_Continue();
 	} else { //Else if kerneyAlive isn't true...
 		cout << "You: Stallman, are you there?\n\n";
-		cout << "Stallman: Yes I am here. I am locked up. Watch out for Kerney.\n\n";
-		cout << "Kerney: I know it wouldn't take you long to come here boy.\n\n";
-		cout << "You: You don't have to do all this Kerney.\n\n";
-		cout << "Kerney: You're right, I don't have to. I WANT TO DO ALL THIS! If you want to stop me, then come and stop me.\n\n";
-		cout << "You: It's over Stallman, you're safe.\n\n";
-		cout << "Stallman: Ah thank you boy. How came I ever repay you?\n\n";
-		cout << "You: Don't worry about it. Let's get out of here.\n\n";
+		cout << "Stallman: Yes I am here. I'm still locked up, though.\n\n";
+		cout << "You: Don't worry, I have the keys to get you out of here.\n\n";
+		cout << BOLDWHITE << "\n\nOpening the door, and traveling up the tower, you eventually enter Stallman's room.\n\n" << RESET;
+		cout << "Stallman: Thank you! How came I ever repay you?\n\n";
+		cout << "You: You know exactly what you can do to repay me 😏😉\n\n";
 
 		cout << BOLDWHITE << "As Prince Stallman is brought back to the castle, you're recognized as being a hero and are greeted to a banquet in your honor.\n" << RESET;
 

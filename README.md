@@ -16,6 +16,9 @@ Coded using Linux standard libraries. May not work on Windows machines.
 GNU GPL licensed.
 
 Cover art and music for this project by ChachaTeraSira (Github), @chachaterasira (Instagram).
+
 Link to this project: 	https://github.com/InformalFormalities/Coding-RPG-40.git
+
 URL to cover art: 		https://cdn.discordapp.com/attachments/1014310924435324979/1022972858617573386/76E1530D-419C-477F-A719-F8D47818B0DB.png
+
 URL to music: 			https://youtu.be/V8_kwrMaoaM

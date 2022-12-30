@@ -426,6 +426,18 @@ int main() {
 	set_cursor_mode(false);
 	Update_Game();
 
+	set_cursor_mode(false);
+	//Print "The End" to screen, and have it fade out.
+	for (int i = 256; i >= 0; i--) {
+		clearscreen();
+		movecursor(y + 3, x - 3);
+		//Change color each run of the loop to make it look like it's fading out.
+		setcolor(i, i, i);
+		cout << "The End\n";
+		//Pauses the program for 10'000 usec.
+		usleep(10'000);
+	}
+
 	//Clean up after yourself.
 	Utility_Text_Settings();
 }
@@ -726,6 +738,10 @@ void Initialize_Map_Points_Of_Interest() {
 		    or
 		    //Prevents POI's from spawning in the river. (Very rough targetting for the river using only the x-axis.)
 		    (xCoord >= 59 and xCoord <= 100)
+		    or
+		    //Prevents POI's from spawning on or near player's default position (outside castle gates).
+		    (yCoord == 13 and
+		     (xCoord >= 10 and xCoord <= 15))
 		    or
 		    //If we already have a place in the map with the same key or key-value, redo it as well.
 		    //Note: Without this, it'll cause some spots to not spawn since maps cannot have duplicate values.
@@ -1455,7 +1471,7 @@ void Tower_Sequence() {
 			//Backslash n is where the cin.ignore stops reading if reached before the numeric limit.
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-			cout << "Stallman: Did I stutter?\n";
+			cout << "\nStallman: Did I stutter?\n\n";
 			cin >> userInput;
 		}
 

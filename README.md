@@ -6,7 +6,7 @@ Those first thirty hours I spent before the due date, and turned it in for full 
 The following fourty hours I spent over my winter break to implement all the features I wished I could have initially.
 I'm very happy with the work I've produced, though I know it's not perfect.
 
-Myself and my groupmate wanted to have some fun with this project.
+My groupmate and I wanted to have some fun with this project.
 As such, we decided to put our professor (Kerney), embedded tutor (Mencarelli), and the creator of C++ (Richard Stallman) into a world--alongside you, the player.
 Our professor had met Richard Stallman, and always told us stories about him. This, in part, lead to the creation of the cover art as it is.
 The cover art, music, and story were all created with the intention of humor and making a coherent world in mind.

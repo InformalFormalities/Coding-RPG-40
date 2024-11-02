@@ -1,318 +1,23 @@
-//Cover art and music for this project by ChachaTeraSira (Github), @chachaterasira (Instagram).
-//URL to cover art: 	https://cdn.discordapp.com/attachments/1014310924435324979/1022972858617573386/76E1530D-419C-477F-A719-F8D47818B0DB.png
-//URL to music: 		https://youtu.be/V8_kwrMaoaM
+//Cover art and music for this project by ChachaTeraSira (Github), @chachaterasira (Instagram)
+//URL to cover art: (No longer valid, view the image in this directory)	
+//URL to music: https://youtu.be/V8_kwrMaoaM
 
-//All code is original unless otherwise indicated. Original code begins line 308.
-//Code encompased between the block comment lines belong to Professor William Kerney of Clovis Community College, Clovis, California. Contact information: https://www.cloviscollege.edu/directory/william-kerney.html
-//Originally included in "/public/colors.h". GPL licensed.
+//All code is original unless otherwise indicated.
+//Colors.h belongs to Professor William Kerney of Clovis Community College, Clovis, California
+//Contact information: https://www.cloviscollege.edu/directory/william-kerney.html
 
-/******************************************************************************************************************************************************************************************************************************************/
-#ifndef __COLORS_H__
-#define __COLORS_H__
-//colors.h - A lightweight replacement for NCURSES that does 24 bit color, cursor movement, and nonblocking I/O
-//It uses standard ANSI escape codes to set the foreground and background text colors for a terminal
-//Prerequisite: Use with a modern terminal emulator, such as iterm2 for Mac or PuTTY for PC
-#include <cstdlib>
-#include <string>
 #include <iostream>
-#include <cstdio>
-#include <cctype>
-#include <unistd.h>
-#include <sys/ioctl.h>
-#include <termios.h>
-#include <utility>
-#include <cassert>
-#include <functional>
-#include <queue>
-
-//Usage:
-//Echo RED as part of a cout to turn the following text red
-//Echo RESET after you are done and it will go back to normal
-//Example: cout << RED << "Hello World" << RESET << endl;
-const std::string RESET   = "\033[0m";
-const std::string BLACK   = "\033[30m";      /* Black */
-const std::string RED     = "\033[31m";      /* Red */
-const std::string GREEN   = "\033[32m";      /* Green */
-const std::string YELLOW  = "\033[33m";      /* Yellow */
-const std::string BLUE    = "\033[34m";      /* Blue */
-const std::string MAGENTA = "\033[35m";      /* Magenta */
-const std::string CYAN    = "\033[36m";      /* Cyan */
-const std::string WHITE   = "\033[37m";      /* White */
-const std::string BOLDBLACK   = "\033[1m\033[30m";      /* Bold Black */
-const std::string BOLDRED     = "\033[1m\033[31m";      /* Bold Red */
-const std::string BOLDGREEN   = "\033[1m\033[32m";      /* Bold Green */
-const std::string BOLDYELLOW  = "\033[1m\033[33m";      /* Bold Yellow */
-const std::string BOLDBLUE    = "\033[1m\033[34m";      /* Bold Blue */
-const std::string BOLDMAGENTA = "\033[1m\033[35m";      /* Bold Magenta */
-const std::string BOLDCYAN    = "\033[1m\033[36m";      /* Bold Cyan */
-const std::string BOLDWHITE   = "\033[1m\033[37m";      /* Bold White */
-
-
-//24-bit color support.
-//NCURSES refuses to implement it since implementation is nonstandard -
-//https://invisible-island.net/ncurses/ncurses.faq.html#xterm_16MegaColors
-
-//Sets the background color for all text printed from this point on
-//Values range from 0 to 255 in each color channel
-//Example: setbgcolor(255,0,255) will set the background color to purple
-inline void setbgcolor(uint8_t R, uint8_t G, uint8_t B) {
-	std::cerr << "\033[48;2;" << (int)R << ";" << (int)G << ";" << (int)B << "m";
-}
-
-//Sets the foreground color for all text printed from this point on
-//Example: setcolor(128,128,128) will set the foreground color to 50% grey
-inline void setcolor(uint8_t R, uint8_t G, uint8_t B) {
-	std::cerr << "\033[38;2;" << (int)R << ";" << (int)G << ";" << (int)B << "m";
-}
-
-//Sets the foreground and background colors back to the default
-//Example: resetcolor();
-inline void resetcolor() {
-	std::cerr << "\033[0m";
-}
-
-//These functions are like a mini NCURSES library
-
-//Returns the ROWS and COLS of the current terminal
-//Example: auto [rows,cols] = get_terminal_size() will make a variable named rows that has the number of rows of the current screen, and cols with the number of columns
-inline std::pair<int, int> get_terminal_size() {
-	struct winsize w;
-	ioctl(0, TIOCGWINSZ, &w);
-	return {w.ws_row - 1, w.ws_col}; //Subtract 1 to give room for the UNIX prompt at the bottom of the screen
-}
-
-//Moves the cursor to the indicated row and column
-//Example: movecursor(10,40) will move the cursor to the row 10 down from the top and 40 to the right of the left edge
-inline void movecursor(uint32_t row, uint32_t col) {
-	std::cerr << "\033[" << row << ";" << col << "H";
-}
-
-//Clears the screen
-//Example: clearscreen();
-inline void clearscreen() {
-	std::cerr << "\033[2J";
-}
-
-//Allows you to turn the cursor on or off
-//Example: show_cursor(false) will turn off the cursor (the little green box)
-inline void show_cursor(bool flag) {
-	if (flag)
-		std::cerr << "\033[?25h";
-	else
-		std::cerr << "\033[?25l";
-}
-inline void set_cursor_mode(bool flag) {
-	show_cursor(flag);    //Alias
-}
-
-//Mouse support - there may be a bug with the first click
-inline static bool mouse_mode = false; //We default to not reading mouse events
-inline void remind_about_callbacks(int row, int col);
-//With mouse events on, if they don't set a handler for mousedown events we will remind them
-inline static std::function<void(int, int)> mousedown_callback = remind_about_callbacks;
-inline static std::function<void(int, int)> mouseup_callback = [](int, int) {}; //Ignore mouseup events by default
-
-//The default function reminds users how to set up a callback then disables itself
-inline void remind_about_callbacks([[maybe_unused]] int row, [[maybe_unused]] int col) {
-	std::cerr << "You enabled mouse events but you didn't call 'on_mousedown' to set up a callback, so enabling mouse events was pointless.\n";
-	std::cerr << "Write code like this: 'void mousedown(int row, int col) { std::cout << row << \",\" << col << std::endl; }\nand then in main: on_mousedown(mousedown);\nDitto for mouseup. Then whenever the user clicks, it will call these two functions." << std::endl;
-	std::cerr << "If you instead want to disable, for example, mouseup events, do this: on_mouseup([](int,int){});" << std::endl;
-
-	//Disable reminders
-	mousedown_callback = [](int, int) {};
-}
-
-//Register callback - every time there is a click it will call this function
-//Once you've enabled mouse events with set_mouse_mode(true), you need to set up a callback
-// for mousedown and/or mouseup events.
-//To set up a callback (a function that will get called when the user clicks), do this:
-//  on_mousedown(your_function_name);
-//Where your_function_name is something like this:
-//  void your_function_name(int row, int col) { cout << row << "," << col << endl; }
-inline void on_mousedown(std::function<void(int, int)> f) {
-	mousedown_callback = f;
-}
-inline void on_mouseup(std::function<void(int, int)> f) {
-	mouseup_callback = f;
-}
-
-
-//This function changes the standard input from "canonical" mode (which means it buffers until a newline is read) into raw mode, where it'll return one keystroke at a time
-//Example: set_raw_mode(true) will turn on nonblocking I/O for cin
-//Example: set_raw_mode(false) will reset I/O to work like normal
-static bool raw_mode = false; //We default to canonical mode
-inline void set_raw_mode(bool flag) {
-	static struct termios old_tio; //Save old settings
-	if (flag and !raw_mode) { //Save original terminal settings
-		tcgetattr(STDIN_FILENO, &old_tio);
-		raw_mode = true;
-		termios tio = old_tio;
-		tio.c_lflag &= ~(ICANON | ECHO); // Disable echo and canonical (cooked) mode
-		tcsetattr(STDIN_FILENO, TCSANOW, &tio);
-		//std::cerr << "^[[?1049h" << std::endl;
-	} else if (!flag and raw_mode) { //Restore original settings
-		tcsetattr(STDIN_FILENO, TCSANOW, &old_tio);
-		raw_mode = false;
-	}
-	//else, do nothing since it's already set one way or the other
-}
-
-//TODO: Figure out a better way of doing smcup & rmcup
-//Switches between alternate buffers, like Vim
-//This lets you switch the whole contents of the screen
-inline void set_alternate_window(bool flag) {
-	if (flag) {
-		std::cerr << "^[[?1049h";
-		std::cerr.flush();
-		//std::cerr << "^[[?1049h" << std::endl;
-	} else {
-		std::cerr << "^[[22;0;0t";
-		std::cerr.flush();
-		//std::cerr << "^[[22;0;0t" << std::endl;
-	}
-}
-
-//Many terminals support the ability to send mouse events
-//Example: set_mouse_mode(true) will give us the ability to read clicks
-inline void set_mouse_mode(bool flag) {
-	if (flag) { //Enable mouse
-		//Why == true? It makes the assertion failed message understandable
-		assert(raw_mode == true); //Mouse can only be enabled in raw_mode
-		std::cerr << "\033[?1000;1006;1015h";
-	} else {
-		//We can disable it outside of raw mode so no assert here
-		std::cerr << "\033[?1000;1006;1015l";
-	}
-	mouse_mode = flag;
-}
-
-//Returns how many bytes are waiting in the input buffer
-//Precondition: Requires set_raw_mode(true) to work
-//Example: int bytes_available = kbhit() will return how many bytes are in the input queue to be read
-inline int kbhit() {
-	assert(raw_mode == true); //This code only works in raw mode
-	int count = 0;
-	ioctl(STDIN_FILENO, FIONREAD, &count);
-	return count;
-}
-
-//Output values for quick_read() (in addition to ASCII codes)
-//Some contants for making reading non-ASCII keys easy
-//These might change, so be prepared to just deal with raw numbers from quick_read
-const int ERR           = -1;
-const int ESC           = 27; //ASCII code 27 is Escape
-const int KEY_EOF       = 4;
-const int ARROW_UP      = 156;
-const int ARROW_DOWN    = 157;
-const int ARROW_RIGHT   = 158;
-const int ARROW_LEFT    = 159;
-const int UP_ARROW      = ARROW_UP; //Alias
-const int DOWN_ARROW    = ARROW_DOWN; //Alias
-const int RIGHT_ARROW   = ARROW_RIGHT; //Alias
-const int LEFT_ARROW    = ARROW_LEFT; //Alias
-const int HOME          = 266;
-const int INSERT        = 267;
-const int DEL           = 268;
-const int DELETE        = DEL; //Alias
-const int END           = 269;
-const int PAGE_UP       = 270;
-const int PAGE_DOWN     = 271;
-const int F1            = 315;
-const int F2            = 316;
-const int F3            = 317;
-const int F4            = 318;
-const int F5            = 319;
-const int F6            = 321; //Hmm
-const int F7            = 322;
-const int F8            = 323;
-const int F9            = 324;
-const int F10           = 325;
-const int F11           = 327; //Hmm
-const int F12           = 328;
-const int MOUSE_WHEEL_UP    = 650;
-const int MOUSE_WHEEL_DOWN  = 658;
-
-//TODO: Improve escape sequence parsing, especially if two are hit between polls
-//Does a non-blocking I/O read from standard input, returns one keystroke
-//Lightweight Equivalent to NCURSES getch()
-//Precondition: Requires set_raw_mode(true) to work
-//Example: int ch = quick_read() will return ERR if no key has been hit, or 'A' if they hit A, or PAGE_DOWN if they hit page down, etc.
-inline int quick_read() {
-	assert(raw_mode == true); //This code only works in raw mode
-	int bytes_available = kbhit();
-	if (bytes_available) {
-		char c = getchar();
-		if (c != 27) //The escape key is ASCII code 27
-			return c;
-		//Happy fun escape code parsing time
-		bytes_available--; //We've already pulled off the escape character
-		if (!bytes_available) return c; //They just hit Escape in this case
-		//Mouse click looks like \e[<0;3;21M and a release \e[<0;3;21. Where 2 is x (from left) and 22 is y (from top)
-		//[<0;111;2m
-
-		//Grab remaining bytes into a deque
-		std::deque<char> input;
-		for (int i = 0; i < bytes_available; i++)
-			input.push_back(getchar());
-
-		//See if it contains the 4 byte escape sequence for a mouse event
-		while (input.size() > 4) {
-			auto [rows, cols] = get_terminal_size(); //Make sure we're returning an int in range
-			if (input[0] == '[' and
-			        input[1] == '<' and
-			        input[2] == '0' and
-			        input[3] == ';') { //Mouse event
-				for (int i = 0; i < 4; i++) input.pop_front();
-				bool reading_col = true; //Col is read first, then row after a ;
-				int temp_col = 0, temp_row = 0;
-				while (input.size()) {
-					c = input.front();
-					input.pop_front();
-					if (c == ';') {
-						reading_col = false;
-						continue;
-					} else if (c == 'M') { //Mousedown event
-						mousedown_callback(temp_row, temp_col);
-					} else if (c == 'm') { //Mouseup event
-						mouseup_callback(temp_row, temp_col);
-					} else if (isdigit(c)) {
-						int temp = c - '0';
-						if (reading_col) temp_col = 10 * temp_col + temp;
-						else temp_row = 10 * temp_row + temp;
-						//Double clicks aren't handled, so just pretend nothing happened
-						if (temp_col > cols or temp_row > rows) return ERR;
-					}
-				}
-
-			} else break;
-		}
-		if (!input.size()) return ERR;
-
-		//The magic number we return is the sum of the escape sequence, which works adequately
-		int sum = 0;
-		for (size_t i = 0; i < input.size(); i++) {
-			c = input[i];
-			//Special case F9 to F12 since they overlap with other F keys
-			if (c == '2' and i == 1 and bytes_available == 4) {
-				sum += 9;
-			}
-			sum += c;
-		}
-		return sum; //This should match ARROW_UP and so forth above
-	}
-	return ERR; //Nothing was read
-}
-#endif
-/******************************************************************************************************************************************************************************************************************************************/
-
-//Original code below...
-#include "Character.h"
+#include <limits>
 #include <map>
+#include "Character.h"
+#include "colors.h"
 using namespace std;
 
 //Global vector. Any function can access it.
-//202 x 42 map; 200 x 40 playable area. NOTE: Player moves 1 on the y axis, 2 on the x axis; this is to make the x and y feel similar when moving.
-//VERY IMPORTANT NOTE: For every extra special character (i.e. \, ", ', etc.) in order to make it appear on screen, you must add that many spaces.
+//202 x 42 map; 200 x 40 playable area. 
+//  NOTE: Player moves 1 on the y axis, 2 on the x axis; this is to make the x and y feel similar when moving.
+//VERY IMPORTANT NOTE: For every extra special character (i.e. \, ", ', etc.) 
+//                     in order to make it appear on screen, you must add that many spaces.
 //                     Will run into out of bounds errors when printing out to the screen otherwise.
 vector<string> worldMap = {
 	"* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *",
@@ -397,7 +102,6 @@ void Utility_Prevent_Clip(int &currentPlayerRow, int previousPlayerRow, int &cur
 
 //Main acts as a driver program.
 int main() {
-
 	//Seeding for later use (in Puzzle_3() & Puzzle_4()).
 	srand(time(NULL));
 
@@ -449,7 +153,8 @@ int main() {
 void Main_Menu() {
 	clearscreen();
 
-	//Places cursor in the middle. x must be changed to accomodate for movecursor putting the "W" in the middle, not the sentence in the middle.
+	//Places cursor in the middle. x must be changed to accomodate for movecursor putting the 
+	//  "W" in the middle, not the sentence in the middle.
 	//Same goes for below print statements; adjust them to fit where on the screen you want them to be.
 	movecursor(y, x - 15);
 	cout << BOLDYELLOW << "Stolen Seduction: Stallman Edition\n" << RESET;
@@ -519,32 +224,46 @@ void Draw_Map(int rowSize, int colSize, int playerPositionCol, int playerPositio
 	for (size_t row = 0; row <= rowSize; row++) {
 		for (size_t col = 0; col <= colSize; col++) {
 			//Prints player location.
-			if (row == playerPositionRow and col == playerPositionCol) cout << "P";
+			if (row == playerPositionRow and col == playerPositionCol) 
+				cout << "P";
 			//Prints out POI's (points of interest) for player to explore.
-			//With this, you're basically saying if the map "POI" has the row we're on, and if at that key (row) the associated value (col) is the same, print out I.
-			else if (POI.contains(row) and POI.at(row) == col) cout << BOLDWHITE << "I" << RESET;
+			//With this, you're basically saying if the map "POI" has the row we're on, 
+			//  and if at that key (row) the associated value (col) is the same, print out 'I'.
+			else if (POI.contains(row) and POI.at(row) == col) 
+				cout << BOLDWHITE << "I" << RESET;
 			//Makes castle bold black.
-			else if ((row >= 2 and row <= 12) and (col >= 8 and col <= 32)) cout << BOLDWHITE << worldMap.at(row).at(col) << RESET;
+			else if ((row >= 2 and row <= 12) and (col >= 8 and col <= 32)) 
+				cout << BOLDWHITE << worldMap.at(row).at(col) << RESET;
 			//Makes path (i.e. the ^ symbols) bold green.
-			else if (worldMap.at(row).at(col) == '^') cout << BOLDGREEN << worldMap.at(row).at(col) << RESET;
+			else if (worldMap.at(row).at(col) == '^') 
+				cout << BOLDGREEN << worldMap.at(row).at(col) << RESET;
 			//Makes puzzle hut 1 (in bottom left) bold magenta.
-			else if ((row >= 36 and row <= 39) and (col >= 6 and col <= 9)) cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
+			else if ((row >= 36 and row <= 39) and (col >= 6 and col <= 9)) 
+				cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
 			//Makes puzzle hut 2 (top side of river, on the left) bold magenta.
-			else if ((row >= 5 and row <= 8) and (col >= 57 and col <= 60)) cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
+			else if ((row >= 5 and row <= 8) and (col >= 57 and col <= 60))
+			       cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
 			//Makes puzzle hut 3 (bottom side of river, on the right) bold magenta.
-			else if ((row >= 23 and row <= 26) and (col >= 99 and col <= 102)) cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
+			else if ((row >= 23 and row <= 26) and (col >= 99 and col <= 102)) 
+				cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
 			//Makes puzzle hut 4 (top side of river, on the right) bold magenta.
-			else if ((row >= 4 and row <= 7) and (col >= 135 and col <= 139)) cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
+			else if ((row >= 4 and row <= 7) and (col >= 135 and col <= 139)) 
+				cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
 			//Makes puzzle hut 5 (closest to the tower) bold magenta.
-			else if ((row >= 20 and row <= 23) and (col >= 172 and col <= 176)) cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
+			else if ((row >= 20 and row <= 23) and (col >= 172 and col <= 176)) 
+				cout << BOLDMAGENTA << worldMap.at(row).at(col) << RESET;
 			//Makes river boundaries above bridge bold cyan.
-			else if ((row >= 1 and row <= 11) and (col >= 64 and col <= 100)) cout << BOLDCYAN << worldMap.at(row).at(col) << RESET;
+			else if ((row >= 1 and row <= 11) and (col >= 64 and col <= 100)) 
+				cout << BOLDCYAN << worldMap.at(row).at(col) << RESET;
 			//Makes river boundaries below bridge bold cyan.
-			else if ((row >= 18 and row <= 41) and (col >= 62 and col <= 95) and (worldMap.at(row).at(col) != '\\')) cout << BOLDCYAN << worldMap.at(row).at(col) << RESET;
+			else if ((row >= 18 and row <= 41) and (col >= 62 and col <= 95) and (worldMap.at(row).at(col) != '\\')) 
+				cout << BOLDCYAN << worldMap.at(row).at(col) << RESET;
 			//Makes tower bold red.
-			else if ((row >= 27 and row <= 41) and (col >= 186 and col <= 197)) cout << BOLDRED << worldMap.at(row).at(col) << RESET;
+			else if ((row >= 27 and row <= 41) and (col >= 186 and col <= 197)) 
+				cout << BOLDRED << worldMap.at(row).at(col) << RESET;
 			//Else prints map at default coloring.
-			else cout << worldMap.at(row).at(col);
+			else 
+				cout << worldMap.at(row).at(col);
 		}
 		cout << endl;
 	}
@@ -574,7 +293,8 @@ void Update_Game() {
 		else if (keyPress == 'i' or keyPress == 'I') {
 			View_Inventory();
 			Draw_Map(rowSize, colSize, currentPlayerCol, currentPlayerRow);
-		} else { //Else if user wants to move, change their current coordinates. For columns we change user position by 2 to make distances between x and y feel similar.
+		} else { //Else if user wants to move, change their current coordinates. 
+			 //  For columns we change user position by 2 to make distances between x and y feel similar.
 			if (keyPress == UP_ARROW or keyPress == 'w') currentPlayerRow--;
 			if (keyPress == DOWN_ARROW or keyPress == 's')	currentPlayerRow++;
 			if (keyPress == LEFT_ARROW or keyPress == 'a') currentPlayerCol -= 2;
@@ -584,8 +304,11 @@ void Update_Game() {
 			currentPlayerCol = clamp(currentPlayerCol, 1, colSize - 1);
 			currentPlayerRow = clamp(currentPlayerRow, 1, rowSize - 1);
 
-			//NOTE FOR BELOW: Else if's are used because only one can happen at a time (i.e. player can only be at one location at a time). There's no reason to check the other statements as a result, reducing runtime.
-			//Prevents player from clipping into main castle block OR leftmost tower OR rightmost tower. (Code is written with respect to the previous pseudocode OR's.)
+			//NOTE FOR BELOW: Else if's are used because only one can happen at a time 
+			//                (i.e. player can only be at one location at a time). 
+			//                There's no reason to check the other statements as a result, reducing runtime.
+			//Prevents player from clipping into main castle block OR leftmost tower OR rightmost tower. 
+			//  (Code is written with respect to the previous pseudocode OR's.)
 			if (((currentPlayerCol >= 8 and currentPlayerCol <= 32) and (currentPlayerRow >= 6 and currentPlayerRow <= 12)) or
 			        ((currentPlayerCol >= 13 and currentPlayerCol <= 16) and (currentPlayerRow >= 2 and currentPlayerRow <= 5)) or
 			        ((currentPlayerCol >= 24 and currentPlayerCol <= 27) and (currentPlayerRow >= 2 and currentPlayerRow <= 5))) {
@@ -615,7 +338,7 @@ void Update_Game() {
 			//Puzzle 2 call (for hut top side river, on left).
 			else if ((currentPlayerCol >= 57 and currentPlayerCol <= 60) and (currentPlayerRow >= 5 and currentPlayerRow <= 8)) {
 				//If player hasn't done the puzzle, send them into it.
-				if (!puzzleTwoDone)	Puzzle_Two();
+				if (!puzzleTwoDone) Puzzle_Two();
 
 				//Always keep player from clipping into hut and redraw.
 				Utility_Prevent_Clip(currentPlayerRow, previousPlayerRow, currentPlayerCol, previousPlayerCol);
@@ -658,7 +381,8 @@ void Update_Game() {
 			}
 			//Checks whether player is at tower.
 			else if ((currentPlayerCol >= 187 and currentPlayerCol <= 198) and (currentPlayerRow >= 27 and currentPlayerRow <= 41)) {
-				//Checks if player can enter tower or not. Area where they can enter in the line of the tower that the path leads to (184th column, and 38th-41st row).
+				//Checks if player can enter tower or not. Area where they can enter in the 
+				//  line of the tower that the path leads to (184th column, and 38th-41st row).
 				if ((puzzleOneDone and puzzleTwoDone and puzzleThreeDone and puzzleFourDone and puzzleFiveDone) and
 				        (currentPlayerCol == 187) and (currentPlayerRow >= 38 and currentPlayerRow <= 41)) {
 					Tower_Sequence();
@@ -691,11 +415,16 @@ void Update_Game() {
 void Initialize_Map_Points_Of_Interest() {
 	//Create i number of sets of coordinates to have POI's (points of interest) appear on map.
 	for (int i = 0; i < 10; i++) {
-		//NOTE: 40 comes from the total playable y-axis area of the map. The 1 just makes sure the POI doesn't end up on the topmost border of the map. Bottom is handled automatically by modulo 40.
+		//NOTE: 40 comes from the total playable y-axis area of the map. 
+		//      The 1 just makes sure the POI doesn't end up on the topmost border of the map. 
+		//      Bottom is handled automatically by modulo 40.
 		int yCoord = (rand() % 40) + 1;
-		//NOTE: 200 comes from the total playable x-axis area of the map. The 1 just makes sure the POI doesn't end up on the leftmost border of the map. Right side is handled automatically by modulo 200.
+		//NOTE: 200 comes from the total playable x-axis area of the map. 
+		//      The 1 just makes sure the POI doesn't end up on the leftmost border of the map. 
+		//      Right side is handled automatically by modulo 200.
 		int xCoord = (rand() % 200) + 1;
-		//If POI is on an even numbered spot, add 1 to make it odd numbered. Necessary since player walks on odd numbered spots for x-axis.
+		//If POI is on an even numbered spot, add 1 to make it odd numbered. 
+		//  Necessary since player walks on odd numbered spots for x-axis.
 		if (xCoord % 2 == 0) xCoord++;
 
 		//We need to check that the POI coordinates aren't somewhere that the player cannot reach.
@@ -747,7 +476,8 @@ void Initialize_Map_Points_Of_Interest() {
 		    //Note: Without this, it'll cause some spots to not spawn since maps cannot have duplicate values.
 		    (POI.contains(yCoord) or POI.contains(xCoord))
 		) {
-			//The long and short of that horrible, HORRIBLE code is basically this: If the POI spawns in any unreachable place by the player, decriment i so that the POI is redone.
+			//The long and short of that horrible, HORRIBLE code is basically this: 
+			//  If the POI spawns in any unreachable place by the player, decriment i so that the POI is redone.
 			i--;
 		}
 		//Otherwise, if the POI is in an attainable spot by the player, add it's coordinates to our list of POI's.
@@ -785,7 +515,8 @@ void Inside_Castle_Trade() {
 		//Reset userInput for reuse.
 		int userInput = 0;
 
-		//FIXME: I have no idea why, but raw mode somehow isn't switched properly when calling Utility_Text_Settings earlier, so I have to manually add this in here.
+		//FIXME: I have no idea why, but raw mode somehow isn't switched properly when 
+		//       calling Utility_Text_Settings earlier, so I have to manually add this in here.
 		//       This isn't worth my time to figure out, so I'll leave it as is since negligibly slows down runtime.
 		set_raw_mode(false);
 
@@ -839,8 +570,9 @@ void Inside_Castle_Trade() {
 			Player.fortifyAmount += 9999;
 			Player.defense += 9999;
 			Player.attackPwr += 9999;
-			//The large negative number prevents the player from obtaining more health potions because the gremlin "drinks" them all once the player gets them.
-			//They're already so OP though that it shouldn't matter.
+			//The large negative number prevents the player from obtaining more health potions 
+			//  because the gremlin "drinks" them all once the player gets them.
+			//  They're already so OP though that it shouldn't matter.
 			Player.healthPotions = -9999;
 			cout << "\nYou: Whoa! The little gremlin just drank all my health potions! What the hell Mencarelli?\n\n"
 			     << "Mencarelli: Yes, well, you need to give it sustinence considering all the perks you gain from the little one. It'll continue to do that, just to mention.\n\n"
@@ -1297,7 +1029,10 @@ void Puzzle_Three() {
 			Utility_Map_Settings();
 
 			return;
-		} else { //Lore for if Kerney is alive. His living status isn't changed since by default the global variable tracking his life/death state is set to true.
+		} 
+		//Lore for if Kerney is alive. His living status isn't changed since by default the global 
+		//  variable tracking his life/death state is set to true.
+		else { 
 			clearscreen();
 			movecursor(0, 0);
 

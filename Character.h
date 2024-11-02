@@ -1,3 +1,8 @@
+#ifndef CHARACTER_H
+#define CHARACTER_H
+
+#include <string>
+
 struct Character {
 	std::string name;
 	//By default character is alive.
@@ -22,3 +27,5 @@ struct Character {
 	//How much a health potion heals for.
 	const int POTION_HEAL_AMOUNT = 30;
 };
+
+#endif
